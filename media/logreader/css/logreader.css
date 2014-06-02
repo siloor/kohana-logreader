@@ -1,0 +1,50 @@
+form .error input, form .error textarea, form input.error, form textarea.error {
+	color: #b94a48;
+	border-color: #ee5f5b;
+}
+body {
+	font-size: 12px;
+}
+#logs .message {
+	width: 80%;
+}
+#logs .message .outer {
+	position: relative;
+}
+#logs .message .outer div {
+	position: absolute;
+	width: 100%;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+#logs tbody tr:hover td {
+	background-color: #d2f2fc;
+	cursor: pointer;
+}
+#logs tbody tr.active td {
+	background-color: #a3e9ff;
+	cursor: pointer;
+}
+@media (min-width: 768px) {
+	#message-container.fixed {
+		position: fixed;
+		top: 20px;
+		right: 15px;
+		padding-left: 22px;
+	}
+}
+#message p, #message h4 {
+	word-wrap: break-word;
+}
+#message p span {
+	font-weight: bold;
+}
+#message .panel-body {
+	overflow: auto;
+}
+#message-tooltip {
+	position: absolute;
+	top: 10px;
+	right: 0;
+}
