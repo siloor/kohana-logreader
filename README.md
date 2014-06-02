@@ -4,14 +4,9 @@
 
 ### Installation:
 
-1. Download this module and add the **logreader** folder it to your `MODPATH`
-2. Enable it in the `bootstrap` file
-```
-  Kohana::modules(array(
-    'logreader' => MODPATH.'logreader', // LogReader
-  ));
-``` 
-3. Go to _http://your-app-root/logreader_
+1. Download this module and add the **logreader** folder in to your `MODPATH`
+2. Enable it in the `bootstrap` file ``` Kohana::modules(array( 'logreader' => MODPATH.'logreader', // LogReader )); ```
+3. Go to `http://your-app-root/logreader`
 4. You are done! 
 
 ![Kohana LogReader interface](http://siloor.com/kohanalogreader/logreader.png "Kohana LogReader interface")
