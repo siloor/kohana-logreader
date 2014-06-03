@@ -4,19 +4,19 @@
  * 
  * LogReader helps you explore Kohana Log files.
  * 
- * @package		Kohana/LogReader
- * @category	Base
- * @author		Milan Magyar <milan.magyar@gmail.com>
- * @copyright	(c) 2014 Milan Magyar
- * @license		MIT
+ * @package     Kohana/LogReader
+ * @category    Base
+ * @author      Milan Magyar <milan.magyar@gmail.com>
+ * @copyright   (c) 2014 Milan Magyar
+ * @license     MIT
  */
 class Kohana_LogReader_URL
 {
 	/**
 	 * Returns LogReader base url
 	 * 
-	 * @return	string
-	 * @uses	URL::base()
+	 * @return  string
+	 * @uses    URL::base()
 	 */
 	public static function base()
 	{
@@ -26,8 +26,8 @@ class Kohana_LogReader_URL
 	/**
 	 * Returns LogReader static url
 	 * 
-	 * @return	string
-	 * @uses	URL::base()
+	 * @return  string
+	 * @uses    URL::base()
 	 */
 	public static function static_base()
 	{
@@ -37,8 +37,8 @@ class Kohana_LogReader_URL
 	/**
 	 * Returns LogReader base url with bad username and password to log user out from HTTP basic authentication
 	 * 
-	 * @return	string
-	 * @uses	LogReader_URL::base()
+	 * @return  string
+	 * @uses    LogReader_URL::base()
 	 */
 	public static function logout_url()
 	{
@@ -48,9 +48,9 @@ class Kohana_LogReader_URL
 	/**
 	 * Replace parameters in string by keys
 	 * 
-	 * @param	string	$text	Template text
-	 * @param	array	$args	Array of replacements (keys are the parameters to change, values are the replacements)
-	 * @return	string
+	 * @param   string  $text  Template text
+	 * @param   array   $args  Array of replacements (keys are the parameters to change, values are the replacements)
+	 * @return  string
 	 */
 	public static function str_template($text, $args = array())
 	{
@@ -71,11 +71,11 @@ class Kohana_LogReader_URL
 	/**
 	 * Returns page url from the template
 	 * 
-	 * @param	integer	$page		Page number
-	 * @param	string	$url		Url template
-	 * @param	string	$first_url	First page url template (if it is different)
-	 * @return	string
-	 * @uses	LogReader_URL::str_template()
+	 * @param   integer  $page       Page number
+	 * @param   string   $url        Url template
+	 * @param   string   $first_url  First page url template (if it is different)
+	 * @return  string
+	 * @uses    LogReader_URL::str_template()
 	 */
 	public static function page_url($page, $url, $first_url = NULL)
 	{
@@ -85,12 +85,12 @@ class Kohana_LogReader_URL
 	/**
 	 * Returns urls and titles to the pager in the View
 	 * 
-	 * @param	integer	$current_original	Current page number
-	 * @param	integer	$total				Number of pages
-	 * @param	string	$url				Url template
-	 * @param	string	$first_url			First page url template (if it is different)
-	 * @return	array
-	 * @uses	LogReader_URL::page_url()
+	 * @param   integer  $current_original  Current page number
+	 * @param   integer  $total             Number of pages
+	 * @param   string   $url               Url template
+	 * @param   string   $first_url         First page url template (if it is different)
+	 * @return  array
+	 * @uses    LogReader_URL::page_url()
 	 */
 	public static function pager($current_original, $total, $url, $first_url = NULL)
 	{

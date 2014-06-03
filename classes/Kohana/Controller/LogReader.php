@@ -4,11 +4,11 @@
  * 
  * LogReader helps you explore Kohana Log files.
  * 
- * @package		Kohana/LogReader
- * @category	Controllers
- * @author		Milan Magyar <milan.magyar@gmail.com>
- * @copyright	(c) 2014 Milan Magyar
- * @license		MIT
+ * @package     Kohana/LogReader
+ * @category    Controllers
+ * @author      Milan Magyar <milan.magyar@gmail.com>
+ * @copyright   (c) 2014 Milan Magyar
+ * @license     MIT
  */
 class Kohana_Controller_LogReader extends Controller
 {
@@ -45,7 +45,7 @@ class Kohana_Controller_LogReader extends Controller
 		}
 	}
 	
-	// Main page
+	// Messages page
 	public function action_index()
 	{
 		// Get maximum number of messages from config
@@ -140,12 +140,12 @@ class Kohana_Controller_LogReader extends Controller
 		$query_string .= '&date-from=' . $filters['date-from'];
 		$query_string .= '&date-to=' . $filters['date-to'];
 
-		// Create view for the main page
+		// Create view for the messages page
 		$view = View::factory('logreader/index');
 
 		$view->user = $this->user;
 
-		$view->content = View::factory('logreader/main');
+		$view->content = View::factory('logreader/messages');
 
 		$view->content->name = 'messages';
 		

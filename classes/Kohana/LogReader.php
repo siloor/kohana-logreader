@@ -4,25 +4,25 @@
  * 
  * LogReader helps you explore Kohana Log files.
  * 
- * @package		Kohana/LogReader
- * @category	Base
- * @author		Milan Magyar <milan.magyar@gmail.com>
- * @copyright	(c) 2014 Milan Magyar
- * @license		MIT
+ * @package     Kohana/LogReader
+ * @category    Base
+ * @author      Milan Magyar <milan.magyar@gmail.com>
+ * @copyright   (c) 2014 Milan Magyar
+ * @license     MIT
  */
 class Kohana_LogReader
 {
 	/**
 	 * LogReader config
 	 * 
-	 * @var		array
+	 * @var  array
 	 */
 	public static $config;
 
 	/**
 	 * Log message levels
 	 * 
-	 * @var		array
+	 * @var  array
 	 */
 	public static $levels = array(
 			'WARNING',
@@ -37,7 +37,7 @@ class Kohana_LogReader
 	/**
 	 * Log message styles
 	 * 
-	 * @var		array
+	 * @var  array
 	 */
 	public static $styles = array(
 			'WARNING' => 'warning',
@@ -52,15 +52,15 @@ class Kohana_LogReader
 	/**
 	 * Returns daily log messages
 	 * 
-	 * @param	string	$date		Date of log messages
-	 * @param	int		$limit		Limit
-	 * @param	int		$offset		Offset
-	 * @param	array	$filters	Filters for messages
-	 * @return	array	Limited matched messages and the count of matched log messages
-	 * @uses	LogReader::log_file_path()
-	 * @uses	LogReader::is_message_line()
-	 * @uses	LogReader::is_trace_line()
-	 * @uses	LogReader::check_filters()
+	 * @param   string  $date     Date of log messages
+	 * @param   int     $limit    Limit
+	 * @param   int     $offset   Offset
+	 * @param   array   $filters  Filters for messages
+	 * @return  array   Limited matched messages and the count of matched log messages
+	 * @uses    LogReader::log_file_path()
+	 * @uses    LogReader::is_message_line()
+	 * @uses    LogReader::is_trace_line()
+	 * @uses    LogReader::check_filters()
 	 */
 	public static function daily_log($date, $limit = 10, $offset = 0, $filters = array())
 	{
@@ -197,8 +197,8 @@ class Kohana_LogReader
 	/**
 	 * Returns path to the daily log file
 	 * 
-	 * @param	string	$date	Date of log messages
-	 * @return	string
+	 * @param   string  $date  Date of log messages
+	 * @return  string
 	 */
 	public static function log_file_path($date)
 	{
@@ -212,8 +212,8 @@ class Kohana_LogReader
 	/**
 	 * Returns true if the given line is a log message, false otherwise
 	 * 
-	 * @param	string	$line	Line of text
-	 * @return	boolean
+	 * @param   string  $line  Line of text
+	 * @return  boolean
 	 */
 	public static function is_message_line($line)
 	{
@@ -223,8 +223,8 @@ class Kohana_LogReader
 	/**
 	 * Returns true if the given line is a log message trace, false otherwise
 	 * 
-	 * @param	string	$line	Line of text
-	 * @return	boolean
+	 * @param   string  $line  Line of text
+	 * @return  boolean
 	 */
 	public static function is_trace_line($line)
 	{
@@ -234,9 +234,9 @@ class Kohana_LogReader
 	/**
 	 * Returns true if the message matched the filters
 	 * 
-	 * @param	array	$filters	Filters to match
-	 * @param	string	$message	Log message
-	 * @return	boolean
+	 * @param   array   $filters  Filters to match
+	 * @param   string  $message  Log message
+	 * @return  boolean
 	 */
 	public static function check_filters($filters, $message)
 	{
@@ -273,12 +273,12 @@ class Kohana_LogReader
 	/**
 	 * Returns log messages
 	 * 
-	 * @param	string	$date_from	Start date of log messages (if not given, it starts with the first log)
-	 * @param	string	$date_to	End date of log messages (if not given, it ends with the last log)
-	 * @param	int		$limit		Limit
-	 * @param	int		$offset		Offset
-	 * @param	array	$filters	Filters for messages
-	 * @return	array	Limited matched messages and the count of matched log messages
+	 * @param   string  $date_from  Start date of log messages (if not given, it starts with the first log)
+	 * @param   string  $date_to    End date of log messages (if not given, it ends with the last log)
+	 * @param   int     $limit      Limit
+	 * @param   int     $offset     Offset
+	 * @param   array   $filters    Filters for messages
+	 * @return  array   Limited matched messages and the count of matched log messages
 	 */
 	public static function logs($date_from = FALSE, $date_to = FALSE, $limit = 10, $offset = 0, $filters = array())
 	{
