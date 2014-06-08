@@ -52,13 +52,19 @@
 							</tr>
 						</thead>
 						<tbody>
+							<?php if ($messages): ?>
 							<?php foreach ($messages as $message): ?>
-							<tr data-data="<?php print htmlspecialchars(json_encode($message)); ?>">
+							<tr class="message" data-data="<?php print htmlspecialchars(json_encode($message)); ?>">
 								<td class="date"><?php print $message['date'] . ' ' . $message['time']; ?></td>
 								<td class="level"><span class="label label-<?php print $message['style']; ?>"><?php print $message['level']; ?></span></td>
 								<td class="message"><div class="outer"><div><?php print $message['type']; ?> - <?php print $message['message']; ?></div></div></td>
 							</tr>
 							<?php endforeach; ?>
+							<?php else: ?>
+							<tr>
+								<td colspan="3">No message found.</td>
+							</tr>
+							<?php endif; ?>
 						</tbody>
 					</table>
 					<div class="text-center">

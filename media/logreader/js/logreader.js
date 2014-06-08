@@ -51,7 +51,7 @@ $(window).on('resize', function(e) {
 	$('#message .panel-body').css('max-height', panelMaxHeight);
 });
 
-$('#logs tbody tr').on('click', function(e) {
+$('#logs tbody').on('click', 'tr.message', function(e) {
 	if (selectedMessage) {
 		selectedMessage.removeClass('active');
 	}
