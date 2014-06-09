@@ -9,7 +9,7 @@
 3. Go to `http://your-app-root/logreader`
 4. You are done! 
 
-![Kohana LogReader interface](http://siloor.com/kohanalogreader/logreader.png "Kohana LogReader interface")
+![Kohana LogReader interface](http://siloor.com/logreader/logreader.png "Kohana LogReader interface")
 
 ### How to use?
 
@@ -28,7 +28,8 @@ You can change the following options
 - `limit` (default:  `40`) - Number of messages per page
 - `path` (default:  `APPPATH . 'logs'`) - The path to the log files
 - `route` (default: `logreader`) - The route to the LogReader interface - `http://your-app-root/logreader`
-- `static_route` (default: `logreader/media`) - The route to the LogReader static files - `http://your-app-root/logreader/media`
+- `static_route` (default: `logreader/media`) - The route to the LogReader static files (it could be a remote url) - `http://your-app-root/logreader/media`
+- `tester` (default:  `FALSE`) - Show log message tester button
 - `authentication` (default:  `FALSE`) - Use HTTP Basic Authetication - Autheticate user by the users array in the config file
 
 ### Notes:

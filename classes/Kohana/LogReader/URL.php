@@ -24,6 +24,17 @@ class Kohana_LogReader_URL
 	}
 	
 	/**
+	 * Returns LogReader API url
+	 * 
+	 * @return  string
+	 * @uses    URL::base()
+	 */
+	public static function api_base()
+	{
+		return URL::base(Request::current()) . Route::get('logreader/api')->uri() . '/';
+	}
+	
+	/**
 	 * Returns LogReader static url
 	 * 
 	 * @return  string
@@ -31,7 +42,14 @@ class Kohana_LogReader_URL
 	 */
 	public static function static_base()
 	{
-		return URL::base(Request::current()) . Route::get('logreader/media')->uri() . '/';
+		if (Valid::url(LogReader::$config['static_route']))
+		{
+			return LogReader::$config['static_route'] . '/';
+		}
+		else
+		{
+			return URL::base(Request::current()) . Route::get('logreader/media')->uri() . '/';
+		}
 	}
 
 	/**

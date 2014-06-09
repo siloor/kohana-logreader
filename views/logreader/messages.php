@@ -1,3 +1,4 @@
+		<div id="result-alert-container" class="container-fluid"></div>
 		<div class="container-fluid">
 			<div class="row-fluid">
 				<div class="col-sm-9">
@@ -87,3 +88,26 @@
 				</div>
 			</div>
 		</div>
+		
+		<script id="message-template" type="text/template">
+			<h4><%= message.type %></h4>
+			<p><span class="label label-<%= message.style %>"><%= message.level %></span></p>
+			<p><strong>Date:</strong> <%= message.date %> <%= message.time %></p>
+			<p><strong>Message:</strong> <%= message.message %></p>
+			<p><strong>File:</strong> <%= message.file %></p>
+			<% if (message.trace.length) { %>
+			<p><strong>Trace:</strong>
+			<% for (var i in message.trace) { %>
+			<br /><strong><%= i %>:</strong> <%= message.trace[i] %>
+			<% } %>
+			</p>
+			<% } %>
+			<p><strong>Raw:</strong> <%= message.raw %></p>
+		</script>
+		
+		<script id="result-alert-template" type="text/template">
+			<div class="alert alert-<%= type %> alert-dismissable">
+				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+				<strong><%= title %></strong> <%= message %>
+			</div>
+		</script>

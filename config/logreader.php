@@ -8,7 +8,8 @@ return array
 	 * integer  limit           messages per page
 	 * string   path            path to the log files
 	 * string   route           route to the LogReader interface
-	 * string   static_route    route to LogReader static files
+	 * string   static_route    route to LogReader static files, it could be a remote url
+	 * boolean  tester          show log message tester button
 	 * boolean  authentication  authentication required using users
 	 * array    users           available users for authentication
 	 */
@@ -16,6 +17,7 @@ return array
 	'path' => APPPATH . 'logs',
 	'route' => 'logreader',
 	'static_route' => 'logreader/media',
+	'tester' => FALSE,
 	'authentication' => FALSE,
 	'users' => array(
 		/**

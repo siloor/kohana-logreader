@@ -1,3 +1,16 @@
+function API() {};
+
+API.call = function(method, service, data, callback) {
+	$.ajax({
+		type: method,
+		url: apiUrl + service,
+		data: data,
+		dataType: 'json',
+		success: function(data) { callback.call(this, data); },
+		error: function(data, error) { callback.call(this, { result: false, data: { errors: [{ code: 600, text: error }] } } ); }
+	});
+};
+
 var mobileView = false;
 
 $("#message-tooltip").tooltip({ placement: 'bottom'});
@@ -10,28 +23,12 @@ $('#input-date-from, #input-date-to')
 
 var selectedMessage;
 
+var showResultAlert = function(type, title, message) {
+	$('#result-alert-container').html(_.template($('#result-alert-template').html(), { type: type, title: title, message: message }));
+};
+
 var refreshMessage = function() {
-	var message = selectedMessage.data('data');
-	
-	var messageText = '<h4>' + message.type + '</h4>';
-	messageText += '<p><span class="label label-' + message.style + '">' + message.level + '</span></p>';
-	messageText += '<p><strong>Date:</strong> ' + message.date + ' ' + message.time + '</p>';
-	messageText += '<p><strong>Message:</strong> ' + message.message + '</p>';
-	messageText += '<p><strong>File:</strong> ' + message.file + '</p>';
-
-	if (message.trace.length) {
-		messageText += '<p><strong>Trace:</strong>';
-
-		for (var i in message.trace) {
-			messageText += '<br /><strong>' + i + ':</strong> ' + message.trace[i];
-		}
-
-		messageText += '</p>';
-	}
-
-	messageText += '<p><strong>Raw:</strong> ' + message.raw + '</p>';
-
-	$('#message .panel-body').html(messageText);
+	$('#message .panel-body').html(_.template($('#message-template').html(), { message: selectedMessage.data('data') }));
 };
 
 $(window).on('scroll', function(e) {
@@ -67,6 +64,17 @@ $('#logs tbody').on('click', 'tr.message', function(e) {
 			scrollTop: $("#message").offset().top
 		}, 800);
 	}
+});
+
+$('#create-test-message-btn').on('click', function(e) {
+	API.call('POST', 'create_test_message', {}, function(data) {
+		if (data.result) {
+			showResultAlert('success', 'Success', 'Test message created. <a href="' + baseUrl + '" class="alert-link">Click here to get today\'s messages!</a>');
+		}
+		else {
+			showResultAlert('danger', 'Warning!', data.data.errors[0].text);
+		}
+	});
 });
 
 $(window).trigger('resize');

@@ -16,6 +16,10 @@
 		<script src="<?php print LogReader_URL::static_base(); ?>bootstrap/js/html5shiv.js"></script>
 		<script src="<?php print LogReader_URL::static_base(); ?>bootstrap/js/respond.min.js"></script>
 		<![endif]-->
+		<script>
+		var baseUrl = '<?php print LogReader_URL::base(); ?>';
+		var apiUrl = '<?php print LogReader_URL::api_base(); ?>';
+		</script>
 	</head>
 	<body>
 		<div class="navbar navbar-inverse navbar-static-top" role="navigation">
@@ -40,10 +44,14 @@
 						<li <?php if ($content->name === 'messages') print 'class="active"'; ?>><a href="<?php print LogReader_URL::base(); ?>" title="Messages">Messages</a></li>
 						<li <?php if ($content->name === 'about') print 'class="active"'; ?>><a href="<?php print LogReader_URL::base(); ?>about" title="About">About</a></li>
 					</ul>
+					<?php if ($content->name === 'messages' && LogReader::$config['tester']): ?>
+					<button type="button" class="btn btn-default navbar-btn" id="create-test-message-btn">Create Test Message</button>
+					<?php endif; ?>
 				</div>
 			</div>
 		</div>
 		<?php print $content; ?>
+		<script src="<?php print LogReader_URL::static_base(); ?>js/underscore-min.js"></script>
 		<script src="<?php print LogReader_URL::static_base(); ?>js/jquery-1.11.1.min.js"></script>
 		<script src="<?php print LogReader_URL::static_base(); ?>bootstrap/js/bootstrap.min.js"></script>
 		<script src="<?php print LogReader_URL::static_base(); ?>bootstrap/js/bootstrap-datepicker.js"></script>
