@@ -2,7 +2,11 @@
 
 ## A Kohana 3.x module for exploring log files
 
-### Installation:
+### DEMO
+
+http://siloor.com/logreader/demo/?message=&date-from=2014-01-01
+
+### Installation
 
 1. Download this module and add the **logreader** folder in to your `MODPATH`
 2. Enable it in the `bootstrap` file ``` Kohana::modules(array( 'logreader' => MODPATH.'logreader', // LogReader )); ```
@@ -21,7 +25,7 @@ Use filters to get what you want
 - Set date filters
 - Select the levels of the log messages
 
-### Configuration:
+### Configuration
 
 You can change the following options
 
@@ -32,7 +36,7 @@ You can change the following options
 - `tester` (default:  `FALSE`) - Show log message tester button
 - `authentication` (default:  `FALSE`) - Use HTTP Basic Authetication - Autheticate user by the users array in the config file
 
-### Notes:
+### Notes
 
 - If you want to improve, please fork and participate. 
 - If you have a suggestion or found a bug, please let me know at - milan.magyar(at)gmail.com
