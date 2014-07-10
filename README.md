@@ -2,6 +2,8 @@
 
 ## A Kohana 3.x module for exploring log files
 
+Please, don't forget to star the repository if you like (and use) the plugin. This will let me know how many users it has and then how to proceed with further development :).
+
 ### DEMO
 
 http://siloor.com/logreader/demo/?message=&date-from=2014-01-01
