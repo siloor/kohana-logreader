@@ -1,3 +1,12 @@
+var escapeHtml = function(unsafe) {
+	return unsafe
+		.replace(/&/g, "&amp;")
+		.replace(/</g, "&lt;")
+		.replace(/>/g, "&gt;")
+		.replace(/"/g, "&quot;")
+		.replace(/'/g, "&#039;");
+};
+
 function API() {};
 
 API.call = function(method, service, data, callback) {

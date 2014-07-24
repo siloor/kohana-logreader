@@ -93,16 +93,16 @@
 			<h4><%= message.type %></h4>
 			<p><span class="label label-<%= message.style %>"><%= message.level %></span></p>
 			<p><strong>Date:</strong> <%= message.date %> <%= message.time %></p>
-			<p><strong>Message:</strong> <%= message.message %></p>
+			<p><strong>Message:</strong> <%= escapeHtml(message.message) %></p>
 			<p><strong>File:</strong> <%= message.file %></p>
 			<% if (message.trace.length) { %>
 			<p><strong>Trace:</strong>
 			<% for (var i in message.trace) { %>
-			<br /><strong><%= i %>:</strong> <%= message.trace[i] %>
+			<br /><strong><%= i %>:</strong> <%= escapeHtml(message.trace[i]) %>
 			<% } %>
 			</p>
 			<% } %>
-			<p><strong>Raw:</strong> <%= message.raw %></p>
+			<p><strong>Raw:</strong> <%= escapeHtml(message.raw) %></p>
 		</script>
 		
 		<script id="result-alert-template" type="text/template">
