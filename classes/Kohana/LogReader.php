@@ -84,7 +84,7 @@ class Kohana_LogReader
 
 				$line = trim($line);
 
-				if (self::is_message_line($line) && self::check_filters($filters, $line))
+				if (self::is_message_line($line) && self::check_filters($filters, $line, self::encode_message_id($date, $cursor)))
 				{
 					$result['all_matches']++;
 					
@@ -151,6 +151,7 @@ class Kohana_LogReader
 						{
 							$log = array();
 
+							$log['id'] = self::encode_message_id($date, $cursor);
 							$log['raw'] = $line;
 							$log['date'] = date('Y.m.d.', strtotime($date));
 							$log['time'] = date('H:i:s', strtotime($matches[1]));
@@ -195,6 +196,23 @@ class Kohana_LogReader
 	}
 	
 	/**
+	 * Returns the log message by Id
+	 * 
+	 * @param   string  $message_id  Id of the log message
+	 * @return  array
+	 */
+	public static function log($message_id)
+	{
+		$message = LogReader::decode_message_id($message_id);
+
+		if (!$message) return NULL;
+
+		$message = LogReader::logs($message['date'], $message['date'], 1, 0, array('ids' => array(LogReader::encode_message_id($message['date'], $message['line_number']))));
+
+		return $message['messages'] ? $message['messages'][0] : NULL;
+	}
+	
+	/**
 	 * Returns path to the daily log file
 	 * 
 	 * @param   string  $date  Date of log messages
@@ -232,15 +250,57 @@ class Kohana_LogReader
 	}
 	
 	/**
+	 * Create message id from date and line number
+	 * 
+	 * @param   string  $date         Date of the message
+	 * @param   int     $line_number  Line number of the message
+	 * @return  string
+	 */
+	public static function encode_message_id($date, $line_number)
+	{
+		$date = strtotime($date);
+
+		$line_number = (int) $line_number;
+
+		if ($date === FALSE || !$line_number) return FALSE;
+
+		return date('Ymd', $date) . $line_number;
+	}
+	
+	/**
+	 * Decode message id to date and line_number
+	 * 
+	 * @param   string  $message  Id of the message
+	 * @return  array
+	 */
+	public static function decode_message_id($message)
+	{
+		$message = array(
+			'date' => strtotime(substr($message, 0, 8)),
+			'line_number' => (int) substr($message, 8),
+		);
+
+		if ($message['date'] !== FALSE && $message['line_number'])
+		{
+			$message['date'] = date('Y-m-d', $message['date']);
+
+			return $message;
+		}
+
+		return FALSE;
+	}
+	
+	/**
 	 * Returns true if the message matched the filters
 	 * 
 	 * @param   array   $filters  Filters to match
 	 * @param   string  $message  Log message
+	 * @param   string  $id       Log message id
 	 * @return  boolean
 	 */
-	public static function check_filters($filters, $message)
+	public static function check_filters($filters, $message, $id)
 	{
-		if ($filters['levels'])
+		if (isset($filters['levels']) && $filters['levels'])
 		{
 			$level_found = FALSE;
 
@@ -259,7 +319,12 @@ class Kohana_LogReader
 			if (!$level_found) return FALSE;
 		}
 
-		if ($filters['message']['text'] && $filters['message']['valid'])
+		if (isset($filters['ids']) && $filters['ids'])
+		{
+			if (!in_array($id, $filters['ids'], TRUE)) return FALSE;
+		}
+
+		if (isset($filters['message']) && $filters['message']['text'] && $filters['message']['valid'])
 		{
 			if (!preg_match('/' . $filters['message']['text'] . '/i', $message))
 			{

@@ -51,6 +51,17 @@ class Kohana_LogReader_URL
 			return URL::base(Request::current()) . Route::get('logreader/media')->uri() . '/';
 		}
 	}
+	
+	/**
+	 * Returns Log message url
+	 * @param   string  $message_id  Id of the log message
+	 * @return  string
+	 * @uses    URL::base()
+	 */
+	public static function log_message($message_id)
+	{
+		return URL::base(Request::current()) . Route::get('logreader/message')->uri(array('message' => $message_id));
+	}
 
 	/**
 	 * Returns LogReader base url with bad username and password to log user out from HTTP basic authentication

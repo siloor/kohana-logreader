@@ -37,7 +37,10 @@ var showResultAlert = function(type, title, message) {
 };
 
 var refreshMessage = function() {
-	$('#message .panel-body').html(_.template($('#message-template').html(), { message: selectedMessage.data('data') }));
+	$('#message .panel-body').html(_.template($('#message-template').html(), {
+		message: selectedMessage.data('data'),
+		link: selectedMessage.find('a').attr('href')
+	}));
 };
 
 $(window).on('scroll', function(e) {
@@ -57,12 +60,14 @@ $(window).on('resize', function(e) {
 	$('#message .panel-body').css('max-height', panelMaxHeight);
 });
 
-$('#logs tbody').on('click', 'tr.message', function(e) {
+$('#logs tbody').on('click', 'tr.message a', function(e) {
+	e.preventDefault();
+
 	if (selectedMessage) {
 		selectedMessage.removeClass('active');
 	}
 
-	selectedMessage = $(this);
+	selectedMessage = $(this).closest('tr.message');
 
 	selectedMessage.addClass('active');
 

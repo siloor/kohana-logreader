@@ -148,6 +148,23 @@ class Kohana_Controller_LogReader extends LogReader_Controller
 		
 		$this->response->body($view);
 	}
+
+	// Message page
+	public function action_message()
+	{
+		// Create view for the about page
+		$view = View::factory('logreader/index');
+		
+		$view->user = $this->user;
+
+		$view->content = View::factory('logreader/message');
+
+		$view->content->name = 'message';
+
+		$view->content->message = LogReader::log($this->request->param('message'));
+		
+		$this->response->body($view);
+	}
 	
 	// Serving static files
 	public function action_media()

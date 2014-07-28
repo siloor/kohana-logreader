@@ -18,9 +18,17 @@ body {
 	white-space: nowrap;
 	text-overflow: ellipsis;
 }
+#logs tbody tr td {
+	padding: 0;
+}
+#logs tbody tr td a {
+	display: block;
+	padding: 8px;
+	color: #000;
+	text-decoration: none;
+}
 #logs tbody tr:hover td {
 	background-color: #d2f2fc;
-	cursor: pointer;
 }
 #logs tbody tr.active td {
 	background-color: #a3e9ff;

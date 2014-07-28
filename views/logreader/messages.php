@@ -56,9 +56,9 @@
 							<?php if ($messages): ?>
 							<?php foreach ($messages as $message): ?>
 							<tr class="message" data-data="<?php print htmlspecialchars(json_encode($message)); ?>">
-								<td class="date"><?php print $message['date'] . ' ' . $message['time']; ?></td>
-								<td class="level"><span class="label label-<?php print $message['style']; ?>"><?php print $message['level']; ?></span></td>
-								<td class="message"><div class="outer"><div><?php print $message['type']; ?> - <?php print $message['message']; ?></div></div></td>
+								<td class="date"><a href="<?php print LogReader_URL::log_message($message['id']); ?>" target="_blank"><?php print $message['date'] . ' ' . $message['time']; ?></a></td>
+								<td class="level"><a href="<?php print LogReader_URL::log_message($message['id']); ?>" target="_blank"><span class="label label-<?php print $message['style']; ?>"><?php print $message['level']; ?></span></a></td>
+								<td class="message"><a href="<?php print LogReader_URL::log_message($message['id']); ?>" target="_blank"><div class="outer"><div><?php print htmlspecialchars($message['type']); ?> - <?php print htmlspecialchars($message['message']); ?></div></div></a></td>
 							</tr>
 							<?php endforeach; ?>
 							<?php else: ?>
@@ -90,8 +90,9 @@
 		</div>
 		
 		<script id="message-template" type="text/template">
-			<h4><%= message.type %></h4>
+			<h4><%= escapeHtml(message.type) %></h4>
 			<p><span class="label label-<%= message.style %>"><%= message.level %></span></p>
+			<p><a href="<%= link %>" target="_blank">Open message in new Tab</a></p>
 			<p><strong>Date:</strong> <%= message.date %> <%= message.time %></p>
 			<p><strong>Message:</strong> <%= escapeHtml(message.message) %></p>
 			<p><strong>File:</strong> <%= message.file %></p>
