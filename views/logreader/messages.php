@@ -63,7 +63,7 @@
 							<?php endforeach; ?>
 							<?php else: ?>
 							<tr>
-								<td colspan="3">No message found.</td>
+								<td colspan="3" class="no-message">No message found.</td>
 							</tr>
 							<?php endif; ?>
 						</tbody>

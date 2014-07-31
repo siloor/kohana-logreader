@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
 // Load LogReader config
-LogReader::$config = Kohana::$config->load('logreader');
+LogReader::init(Kohana::$config->load('logreader'));
 
 // Set route to LogReader static files if static route is not a remote url
 if (!Valid::url(LogReader::$config['static_route']))

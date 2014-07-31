@@ -119,7 +119,15 @@ class Kohana_Controller_LogReader extends LogReader_Controller
 		$view->content->filters = $filters;
 
 		// Get log messages
-		$view->content->messages = LogReader::logs($filters['date-from'], $filters['date-to'], $limit, ($current_page - 1) * $limit, $filters);
+		$view->content->messages = LogReader::get_messages(
+			$filters['date-from'],
+			$filters['date-to'],
+			$limit,
+			($current_page - 1) * $limit,
+			$filters['message']['text'] && $filters['message']['valid'] ? $filters['message']['text'] : NULL,
+			$filters['levels'],
+			array()
+		);
 		
 		$view->content->all_matches = $view->content->messages['all_matches'];
 		
@@ -161,7 +169,7 @@ class Kohana_Controller_LogReader extends LogReader_Controller
 
 		$view->content->name = 'message';
 
-		$view->content->message = LogReader::log($this->request->param('message'));
+		$view->content->message = LogReader::get_message($this->request->param('message'));
 		
 		$this->response->body($view);
 	}
