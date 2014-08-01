@@ -38,6 +38,12 @@
 								<?php endforeach; unset($level_index); ?>
 							</div>
 							<div class="form-group">
+								<label for="input-limit" class="col-lg-1 control-label">Limit</label>
+								<div class="col-lg-2">
+									<input type="text" class="form-control" id="input-limit" name="limit" placeholder="Limit" value="<?php print $filters['limit']; ?>" />
+								</div>
+							</div>
+							<div class="form-group">
 								<div class="col-lg-6 col-lg-offset-1">
 									<button type="submit" class="btn btn-primary">Run filter</button>
 								</div>

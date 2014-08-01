@@ -15,9 +15,6 @@ class Kohana_Controller_LogReader extends LogReader_Controller
 	// Messages page
 	public function action_index()
 	{
-		// Get maximum number of messages from config
-		$limit = LogReader::$config['limit'];
-		
 		// Get page number from query
 		$current_page = (int) $this->request->query('page');
 		
@@ -35,7 +32,11 @@ class Kohana_Controller_LogReader extends LogReader_Controller
 		$filters['levels'] = $this->request->query('levels');
 		$filters['date-from'] = $this->request->query('date-from');
 		$filters['date-to'] = $this->request->query('date-to');
-		
+		$filters['limit'] = (int) $this->request->query('limit');
+
+		// Get maximum number of messages from config
+		$filters['limit'] = $filters['limit'] ? $filters['limit'] : LogReader::$config['limit'];
+
 		// Validate message filter
 		if (!isset($filters['message']['text']) || !is_string($filters['message']['text']))
 		{
@@ -122,8 +123,8 @@ class Kohana_Controller_LogReader extends LogReader_Controller
 		$view->content->messages = LogReader::get_messages(
 			$filters['date-from'],
 			$filters['date-to'],
-			$limit,
-			($current_page - 1) * $limit,
+			$filters['limit'],
+			($current_page - 1) * $filters['limit'],
 			$filters['message']['text'] && $filters['message']['valid'] ? $filters['message']['text'] : NULL,
 			$filters['levels'],
 			array()
@@ -137,7 +138,7 @@ class Kohana_Controller_LogReader extends LogReader_Controller
 		
 		$uri = LogReader_URL::base() . "?" . substr($query_string, 1);
 
-		$view->content->pages = LogReader_URL::pager($current_page, ceil($view->content->all_matches / $limit), $uri . "&page=%(page)s", $uri);
+		$view->content->pages = LogReader_URL::pager($current_page, ceil($view->content->all_matches / $filters['limit']), $uri . "&page=%(page)s", $uri);
 		
 		$this->response->body($view);
 	}
