@@ -10,9 +10,13 @@ var escapeHtml = function(unsafe) {
 function API() {};
 
 API.call = function(method, service, data, callback) {
+	API.callUrl(method, apiUrl + service, data, callback);
+};
+
+API.callUrl = function(method, url, data, callback) {
 	$.ajax({
 		type: method,
-		url: apiUrl + service,
+		url: url,
 		data: data,
 		dataType: 'json',
 		success: function(data) { callback.call(this, data); },
@@ -78,6 +82,85 @@ $('#logs tbody').on('click', 'tr.message a', function(e) {
 			scrollTop: $("#message").offset().top
 		}, 800);
 	}
+});
+
+// Auto Refresh
+var autoRefresh = false
+	autoRefreshInterval = 0,
+	autoRefreshTimeout = 0,
+	autoRefreshTime = 3;
+
+var setAutoRefresh = function(value) {
+	autoRefresh = value;
+	
+	if (autoRefresh) {
+		$('.next-refresh').show();
+
+		refreshMessages();
+	}
+	else {
+		$('.next-refresh').hide();
+
+		clearInterval(autoRefreshInterval);
+	}
+};
+
+var refreshMessages = function() {
+	var loadingTime = 0;
+	
+	$('.next-refresh-counter').html(autoRefreshTime - loadingTime);
+
+	clearInterval(autoRefreshInterval);
+	
+	autoRefreshInterval = setInterval(function() {
+		loadingTime++;
+
+		$('.next-refresh-counter').html(autoRefreshTime - loadingTime);
+		
+		if (loadingTime >= autoRefreshTime) {
+			clearInterval(autoRefreshInterval);
+			
+			var inputParams = {
+				all_matches_before_id: allMatches
+			};
+			
+			var lastMessage = $('#content #logs tr.message:first').data('data');
+			
+			if (lastMessage) {
+				inputParams.last_message_id = lastMessage.id;
+			}
+
+			API.call('GET', 'messages', inputParams, function(data) {
+				if (data.result) {
+					var newMessages = $(data.data.html);
+					allMatches += data.data.all_matches;
+					
+					var newRows = newMessages.find('#logs tr.message');
+					
+					$('#content #logs tbody').prepend(newRows);
+					
+					var numRows = $('#logs tr.message').length;
+					
+					if (numRows > filters.limit) {
+						$('#logs tr.message').slice(-1 * (numRows - filters.limit)).remove();
+					}
+					
+					$('#content #messages-pagination').html(newMessages.find('#messages-pagination'));
+					
+					if (autoRefresh) {
+						refreshMessages();
+					}
+				}
+				else {
+					showResultAlert('danger', 'Warning!', data.data.errors[0].text);
+				}
+			});
+		}
+	}, 1000);
+};
+
+$('#auto-refresh').on('change', function(e) {
+	setAutoRefresh($('#auto-refresh').is(':checked'));
 });
 
 $('#create-test-message-btn').on('click', function(e) {

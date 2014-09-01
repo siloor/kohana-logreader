@@ -83,7 +83,9 @@ class Kohana_LogReader_URL
 	 */
 	public static function str_template($text, $args = array())
 	{
-		$names = preg_match_all('/%\((.*?)\)/', $text, $matches, PREG_SET_ORDER);
+		$text = preg_replace("/%(?!\((.*?)\))/i", '%%', $text);
+
+		preg_match_all('/%\((.*?)\)/', $text, $matches, PREG_SET_ORDER);
 		
 		$values = array();
 		

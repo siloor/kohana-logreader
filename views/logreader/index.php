@@ -11,11 +11,14 @@
 		<link href="<?php print LogReader_URL::static_base(); ?>bootstrap/css/bootstrap.min.css" rel="stylesheet" />
 		<link href="<?php print LogReader_URL::static_base(); ?>bootstrap/css/bootstrap-theme.min.css" rel="stylesheet" />
 		<link href="<?php print LogReader_URL::static_base(); ?>bootstrap/css/datepicker.css" rel="stylesheet" />
-		<link href="<?php print LogReader_URL::static_base(); ?>css/logreader.css" rel="stylesheet" />
 		<!--[if lt IE 9]>
 		<script src="<?php print LogReader_URL::static_base(); ?>bootstrap/js/html5shiv.js"></script>
 		<script src="<?php print LogReader_URL::static_base(); ?>bootstrap/js/respond.min.js"></script>
 		<![endif]-->
+		<link href="<?php print LogReader_URL::static_base(); ?>css/logreader.css" rel="stylesheet" />
+		<?php if (isset($stylesheets) && $stylesheets): foreach ($stylesheets as $stylesheet): ?>
+		<link href="<?php print $stylesheet; ?>" rel="stylesheet" />
+		<?php endforeach; endif; ?>
 		<script>
 		var baseUrl = '<?php print LogReader_URL::base(); ?>';
 		var apiUrl = '<?php print LogReader_URL::api_base(); ?>';
@@ -50,11 +53,15 @@
 				</div>
 			</div>
 		</div>
-		<?php print $content; ?>
+		<div id="content">
+			<?php print $content; ?>
+		</div>
 		<script src="<?php print LogReader_URL::static_base(); ?>js/underscore-min.js"></script>
 		<script src="<?php print LogReader_URL::static_base(); ?>js/jquery-1.11.1.min.js"></script>
 		<script src="<?php print LogReader_URL::static_base(); ?>bootstrap/js/bootstrap.min.js"></script>
 		<script src="<?php print LogReader_URL::static_base(); ?>bootstrap/js/bootstrap-datepicker.js"></script>
-		<script src="<?php print LogReader_URL::static_base(); ?>js/logreader.js"></script>
+		<?php if (isset($javascripts) && $javascripts): foreach ($javascripts as $javascript): ?>
+		<script src="<?php print $javascript; ?>"></script>
+		<?php endforeach; endif; ?>
 	</body>
 </html>

@@ -1,0 +1,56 @@
+.next-refresh {
+	display: none;
+}
+#logs .message {
+	width: 80%;
+}
+#logs .message .outer {
+	position: relative;
+}
+#logs .message .outer div {
+	position: absolute;
+	width: 100%;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+#logs tbody tr td {
+	padding: 0;
+}
+#logs tbody tr td.no-message {
+	padding: 8px;
+}
+#logs tbody tr td a {
+	display: block;
+	padding: 8px;
+	color: #000;
+	text-decoration: none;
+}
+#logs tbody tr:hover td {
+	background-color: #d2f2fc;
+}
+#logs tbody tr.active td {
+	background-color: #a3e9ff;
+}
+@media (min-width: 768px) {
+	#message-container.fixed {
+		position: fixed;
+		top: 20px;
+		right: 15px;
+		padding-left: 22px;
+	}
+}
+#message p, #message h4 {
+	word-wrap: break-word;
+}
+#message p span {
+	font-weight: bold;
+}
+#message .panel-body {
+	overflow: auto;
+}
+#message-tooltip {
+	position: absolute;
+	top: 10px;
+	right: 0;
+}

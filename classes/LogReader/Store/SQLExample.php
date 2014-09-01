@@ -55,9 +55,10 @@ class LogReader_Store_SQLExample extends LogReader_Store
 	 * @param   string  $search     The message filter
 	 * @param   array   $levels     The levels filter
 	 * @param   array   $ids        The ids filter
+	 * @param   array   $from_id    Newer messages from specific id
 	 * @return  array   Limited matched messages and the count of matched log messages
 	 */
-	public function get_messages($date_from = FALSE, $date_to = FALSE, $limit = 10, $offset = 0, $search = NULL, $levels = array(), $ids = array())
+	public function get_messages($date_from = FALSE, $date_to = FALSE, $limit = 10, $offset = 0, $search = NULL, $levels = array(), $ids = array(), $from_id = NULL)
 	{
 		$result = array(
 			'all_matches' => 0, 'messages' => array()
@@ -117,6 +118,13 @@ class LogReader_Store_SQLExample extends LogReader_Store
 			}
 			
 			array_push($where, 'id IN (' . implode(',', $ids_for_sql) . ')');
+		}
+		
+		if ($from_id)
+		{
+			array_push($where, 'id > :from_id');
+			
+			$parameters[':from_id'] = $from_id;
 		}
 		
 		$where = $where ? 'WHERE ' . implode(' AND ', $where) : '';

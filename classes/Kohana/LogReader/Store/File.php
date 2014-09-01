@@ -39,12 +39,30 @@ class Kohana_LogReader_Store_File extends LogReader_Store
 	 * @param   string  $search     The message filter
 	 * @param   array   $levels     The levels filter
 	 * @param   array   $ids        The ids filter
+	 * @param   array   $from_id    Newer messages from specific id
 	 * @return  array   Limited matched messages and the count of matched log messages
 	 */
-	public function get_messages($date_from = FALSE, $date_to = FALSE, $limit = 10, $offset = 0, $search = NULL, $levels = array(), $ids = array())
+	public function get_messages($date_from = FALSE, $date_to = FALSE, $limit = 10, $offset = 0, $search = NULL, $levels = array(), $ids = array(), $from_id = NULL)
 	{
 		$date_from = strtotime($date_from);
 		$date_to = strtotime($date_to);
+
+		if ($from_id)
+		{
+			$from_id_date = $this->decode_message_id($from_id);
+
+			$from_id_date = strtotime($from_id_date['date']);
+
+			if ($date_from < $from_id_date)
+			{
+				$date_from = $from_id_date;
+			}
+
+			if ($date_to < $from_id_date)
+			{
+				$date_to = $from_id_date;
+			}
+		}
 		
 		function list_files($dir)
 		{
@@ -154,7 +172,7 @@ class Kohana_LogReader_Store_File extends LogReader_Store
 				$new_offset = 0;
 			}
 
-			$daily_messages = $this->get_daily_messages($log['date'], $new_limit, $new_offset, $search, $levels, $ids);
+			$daily_messages = $this->get_daily_messages($log['date'], $new_limit, $new_offset, $search, $levels, $ids, $from_id);
 			
 			$result['all_matches'] += $daily_messages['all_matches'];
 			
@@ -177,13 +195,14 @@ class Kohana_LogReader_Store_File extends LogReader_Store
 	 * @param   string  $search   The message filter
 	 * @param   array   $levels   The levels filter
 	 * @param   array   $ids      The ids filter
+	 * @param   array   $from_id  Newer messages from specific id
 	 * @return  array   Limited matched messages and the count of matched log messages
 	 * @uses    LogReader::log_file_path()
 	 * @uses    LogReader::is_message_line()
 	 * @uses    LogReader::is_trace_line()
 	 * @uses    LogReader::check_filters()
 	 */
-	protected function get_daily_messages($date, $limit = 10, $offset = 0, $search = NULL, $levels = array(), $ids = array())
+	protected function get_daily_messages($date, $limit = 10, $offset = 0, $search = NULL, $levels = array(), $ids = array(), $from_id = NULL)
 	{
 		$result = array('all_matches' => 0, 'messages' => array());
 		
@@ -205,7 +224,7 @@ class Kohana_LogReader_Store_File extends LogReader_Store
 
 				$line = trim($line);
 
-				if ($this->is_message_line($line) && $this->check_filters($this->encode_message_id($date, $cursor), $line, $search, $levels, $ids))
+				if ($this->is_message_line($line) && $this->check_filters($this->encode_message_id($date, $cursor), $line, $search, $levels, $ids, $from_id))
 				{
 					$result['all_matches']++;
 					
@@ -402,9 +421,10 @@ class Kohana_LogReader_Store_File extends LogReader_Store
 	 * @param   string  $search   The message filter
 	 * @param   array   $levels   The levels filter
 	 * @param   array   $ids      The ids filter
+	 * @param   array   $from_id  Newer messages from specific id
 	 * @return  boolean
 	 */
-	protected function check_filters($id, $message, $search, $levels, $ids)
+	protected function check_filters($id, $message, $search, $levels, $ids, $from_id)
 	{
 		if ($levels)
 		{
@@ -428,6 +448,25 @@ class Kohana_LogReader_Store_File extends LogReader_Store
 		if ($ids)
 		{
 			if (!in_array($id, $ids, TRUE)) return FALSE;
+		}
+		
+		if ($from_id)
+		{
+			$decoded_id = $this->decode_message_id($id);
+			
+			$decoded_from_id = $this->decode_message_id($from_id);
+			
+			if ($decoded_id['date'] === $decoded_from_id['date'])
+			{
+				if ($decoded_id['line_number'] <= $decoded_from_id['line_number'])
+				{
+					return FALSE;
+				}
+			}
+			else if (strtotime($decoded_id['date']) < strtotime($decoded_from_id['date']))
+			{
+				return FALSE;
+			}
 		}
 
 		if ($search)

@@ -22,94 +22,33 @@ class Kohana_Controller_LogReader extends LogReader_Controller
 		{
 			$current_page = 1;
 		}
-
-		// Create query string to use the same filters on other pages
-		$query_string = '';
-
-		// Get filters from query parameters
-		$filters = array();
-		$filters['message'] = array('text' => $this->request->query('message'));
-		$filters['levels'] = $this->request->query('levels');
-		$filters['date-from'] = $this->request->query('date-from');
-		$filters['date-to'] = $this->request->query('date-to');
-		$filters['limit'] = (int) $this->request->query('limit');
-
-		// Get maximum number of messages from config
-		$filters['limit'] = $filters['limit'] ? $filters['limit'] : LogReader::$config['limit'];
-
-		// Validate message filter
-		if (!isset($filters['message']['text']) || !is_string($filters['message']['text']))
-		{
-			$filters['message']['text'] = '';
-		}
-
-		$filters['message']['valid'] = @preg_match('/' . $filters['message']['text'] . '/i', NULL) !== FALSE;
 		
-		$query_string .= '&message=' . $filters['message']['text'];
-
-		// Validate levels filter
-		if (isset($filters['levels']) && $filters['levels'] && is_array($filters['levels']))
-		{
-			foreach ($filters['levels'] as $key => $level)
-			{
-				if (!in_array($level, LogReader::$levels, TRUE))
-				{
-					unset($filters['levels'][$key]);
-				}
-				else
-				{
-					$query_string .= '&levels[]=' . $level;
-				}
-			}
-			
-			unset($key, $level);
-		}
-		else
-		{
-			$filters['levels'] = array();
-		}
+		$filters = LogReader::create_filters(
+			$this->request->query('message'),
+			$this->request->query('levels'),
+			$this->request->query('date-from'),
+			$this->request->query('date-to'),
+			$this->request->query('limit')
+		);
 		
-		// Validate date parameters
-		$filters['date-from'] = strtotime($filters['date-from']);
-		$filters['date-to'] = strtotime($filters['date-to']);
-
-		// If date-from and date-to are not given use current date
-		if ($filters['date-from'] === FALSE && $filters['date-to'] === FALSE)
-		{
-			$filters['date-from'] = time();
-			$filters['date-to'] = time();
-		}
-		// If date-from is not given use 1900.01.01.
-		else if ($filters['date-from'] === FALSE)
-		{
-			$filters['date-from'] = strtotime('1900-01-01');
-		}
-		// If date-to is not given use current date
-		else if ($filters['date-to'] === FALSE)
-		{
-			$filters['date-to'] = time();
-		}
-
-		// If date-from is greater than date-to change their values
-		if ($filters['date-to'] < $filters['date-from'])
-		{
-			$date_dummy = $filters['date-to'];
-
-			$filters['date-to'] = $filters['date-from'];
-
-			$filters['date-from'] = $date_dummy;
-
-			unset($date_dummy);
-		}
-
-		$filters['date-from'] = date('Y-m-d', $filters['date-from']);
-		$filters['date-to'] = date('Y-m-d', $filters['date-to']);
-
-		$query_string .= '&date-from=' . $filters['date-from'];
-		$query_string .= '&date-to=' . $filters['date-to'];
-
+		$filters_for_autorefresh = LogReader::create_filters(
+			$this->request->query('message'),
+			$this->request->query('levels'),
+			$this->request->query('date-from'),
+			NULL,
+			$this->request->query('limit')
+		);
+		
 		// Create view for the messages page
 		$view = View::factory('logreader/index');
+		
+		$view->stylesheets = array(
+			LogReader_URL::static_base() . 'css/messages.css',
+		);
+		
+		$view->javascripts = array(
+			LogReader_URL::static_base() . 'js/messages.js',
+		);
 
 		$view->user = $this->user;
 
@@ -127,7 +66,8 @@ class Kohana_Controller_LogReader extends LogReader_Controller
 			($current_page - 1) * $filters['limit'],
 			$filters['message']['text'] && $filters['message']['valid'] ? $filters['message']['text'] : NULL,
 			$filters['levels'],
-			array()
+			array(),
+			NULL
 		);
 		
 		$view->content->all_matches = $view->content->messages['all_matches'];
@@ -136,7 +76,9 @@ class Kohana_Controller_LogReader extends LogReader_Controller
 		
 		$view->content->current_page = $current_page;
 		
-		$uri = LogReader_URL::base() . "?" . substr($query_string, 1);
+		$view->content->auto_refresh_url = LogReader_URL::api_base() . 'messages/?' . $filters_for_autorefresh['query_string'];
+		
+		$uri = LogReader_URL::base() . "?" . $filters['query_string'];
 
 		$view->content->pages = LogReader_URL::pager($current_page, ceil($view->content->all_matches / $filters['limit']), $uri . "&page=%(page)s", $uri);
 		
