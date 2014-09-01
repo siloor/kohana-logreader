@@ -129,17 +129,21 @@ var refreshMessages = function() {
 				inputParams.last_message_id = lastMessage.id;
 			}
 
-			API.call('GET', 'messages', inputParams, function(data) {
+			API.callUrl('GET', autoRefreshUrl, inputParams, function(data) {
 				if (data.result) {
 					var newMessages = $(data.data.html);
 					allMatches += data.data.all_matches;
 					
 					var newRows = newMessages.find('#logs tr.message');
 					
+					if (newRows.length && $('#logs tr .no-message').length) {
+						$('#logs tr .no-message').closest('tr').remove();
+					}
+
 					$('#content #logs tbody').prepend(newRows);
 					
 					var numRows = $('#logs tr.message').length;
-					
+
 					if (numRows > filters.limit) {
 						$('#logs tr.message').slice(-1 * (numRows - filters.limit)).remove();
 					}
