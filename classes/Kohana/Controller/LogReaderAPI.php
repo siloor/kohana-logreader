@@ -75,6 +75,8 @@ class Kohana_Controller_LogReaderAPI extends LogReader_Controller
 
 		$view->filters = $filters;
 
+		$view->auto_refresh_time = LogReader::$config['auto_refresh_interval'];
+
 		// Get log messages
 		$view->messages = LogReader::get_messages(
 			$filters['date-from'],

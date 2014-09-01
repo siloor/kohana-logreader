@@ -87,8 +87,7 @@ $('#logs tbody').on('click', 'tr.message a', function(e) {
 // Auto Refresh
 var autoRefresh = false
 	autoRefreshInterval = 0,
-	autoRefreshTimeout = 0,
-	autoRefreshTime = 3;
+	autoRefreshTimeout = 0;
 
 var setAutoRefresh = function(value) {
 	autoRefresh = value;

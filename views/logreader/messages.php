@@ -2,6 +2,7 @@
 			var autoRefreshUrl = '<?php print $auto_refresh_url; ?>';
 			var filters = <?php print json_encode($filters); ?>;
 			var allMatches = <?php print $all_matches; ?>;
+			var autoRefreshTime = <?php print $auto_refresh_time; ?>;
 			</script>
 			<div id="result-alert-container" class="container-fluid"></div>
 			<div class="container-fluid">

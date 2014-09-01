@@ -32,6 +32,7 @@ Use filters to get what you want
 You can change the following options
 
 - `limit` (default:  `40`) - Number of messages per page
+- `auto_refresh_interval` (default:  `5`) - The interval for auto refresh in seconds
 - `store` (default:  `File`) - You can easily write your own store if yo use other log solution than the default one. There is an example Store called SQLExample to help you to create your own binding.
 - `route` (default: `logreader`) - The route to the LogReader interface - `http://your-app-root/logreader`
 - `static_route` (default: `logreader/media`) - The route to the LogReader static files (it could be a remote url) - `http://your-app-root/logreader/media`

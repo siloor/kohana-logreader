@@ -5,15 +5,17 @@ return array
 	/**
 	 * The following options are available for LogReader
 	 *
-	 * integer  limit           messages per page
-	 * string   store           store of log messages
-	 * string   route           route to the LogReader interface
-	 * string   static_route    route to LogReader static files, it could be a remote url
-	 * boolean  tester          show log message tester button
-	 * boolean  authentication  authentication required using users
-	 * array    users           available users for authentication
+	 * integer  limit                  messages per page
+	 * integer  auto_refresh_interval  the interval for auto refresh in seconds
+	 * string   store                  store of log messages
+	 * string   route                  route to the LogReader interface
+	 * string   static_route           route to LogReader static files, it could be a remote url
+	 * boolean  tester                 show log message tester button
+	 * boolean  authentication         authentication required using users
+	 * array    users                  available users for authentication
 	 */
 	'limit' => 40,
+	'auto_refresh_interval' => 5,
 	'store' => array(
 		/**
 		 * Configuration options for the LogReader store
