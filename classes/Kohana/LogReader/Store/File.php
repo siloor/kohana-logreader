@@ -197,10 +197,6 @@ class Kohana_LogReader_Store_File extends LogReader_Store
 	 * @param   array   $ids      The ids filter
 	 * @param   array   $from_id  Newer messages from specific id
 	 * @return  array   Limited matched messages and the count of matched log messages
-	 * @uses    LogReader::log_file_path()
-	 * @uses    LogReader::is_message_line()
-	 * @uses    LogReader::is_trace_line()
-	 * @uses    LogReader::check_filters()
 	 */
 	protected function get_daily_messages($date, $limit = 10, $offset = 0, $search = NULL, $levels = array(), $ids = array(), $from_id = NULL)
 	{

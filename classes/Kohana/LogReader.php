@@ -72,6 +72,36 @@ class Kohana_LogReader
 	}
 	
 	/**
+	 * Returns true, if authentication is required.
+	 * 
+	 * @return  boolean
+	 */
+	public static function is_authentication_required()
+	{
+		return (bool) self::$config['authentication'];
+	}
+	
+	/**
+	 * Returns user data by the given username and password.
+	 * 
+	 * @param   string  $username  Username of the user.
+	 * @param   string  $password  Password of the user.
+	 * @return  array
+	 */
+	public static function get_user_by_username_and_password($username, $password)
+	{
+		foreach (self::$config['users'] as $user)
+		{
+			if ($user['username'] === $username && $user['password'] === $password)
+			{
+				return $user;
+			}
+		}
+		
+		return NULL;
+	}
+	
+	/**
 	 * Validate and extend the given filters
 	 * 
 	 * @param   string  $search     The message filter
@@ -98,9 +128,9 @@ class Kohana_LogReader
 		$filters['query_string'] = '';
 		
 		// Get maximum number of messages from config
-		$filters['limit'] = $filters['limit'] ? $filters['limit'] : LogReader::$config['limit'];
+		$filters['limit'] = $filters['limit'] ? $filters['limit'] : self::$config['limit'];
 		
-		$use_in_qs['limit'] = $filters['limit'] !== LogReader::$config['limit'];
+		$use_in_qs['limit'] = $filters['limit'] !== self::$config['limit'];
 		
 		if ($use_in_qs['limit'])
 		{

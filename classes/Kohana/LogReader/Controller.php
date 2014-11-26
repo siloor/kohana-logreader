@@ -10,7 +10,7 @@
  * @copyright   (c) 2014 Milan Magyar
  * @license     MIT
  */
-class Kohana_LogReader_Controller extends Controller
+class Kohana_LogReader_Controller extends Kohana_Controller
 {
 	// Authenticated user
 	protected $user = NULL;
@@ -20,23 +20,12 @@ class Kohana_LogReader_Controller extends Controller
 		parent::before();
 		
 		// Authentication if required
-		if (LogReader::$config['authentication'])
+		if (LogReader::is_authentication_required())
 		{
 			// Use HTTP basic authentication
 			if (isset($_SERVER['PHP_AUTH_USER']) && isset($_SERVER['PHP_AUTH_PW']))
 			{
-				// Try to authenticate client from config users
-				foreach (LogReader::$config['users'] as $user)
-				{
-					if ($_SERVER['PHP_AUTH_USER'] === $user['username'] && $_SERVER['PHP_AUTH_PW'] === $user['password'])
-					{
-						$this->user = $user;
-
-						break;
-					}
-				}
-
-				unset($user);
+				$this->user = LogReader::get_user_by_username_and_password($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']);
 			}
 			
 			// Set Authentication required response if needed
