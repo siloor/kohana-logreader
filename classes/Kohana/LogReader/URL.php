@@ -71,7 +71,7 @@ class Kohana_LogReader_URL
 	 */
 	public static function logout_url()
 	{
-		return preg_replace('(://)', '://badusername:badpassword@', self::base(), 1);
+		return preg_replace('(://)', '://badusername:badpassword@', static::base(), 1);
 	}
 	
 	/**
@@ -110,7 +110,7 @@ class Kohana_LogReader_URL
 	 */
 	public static function page_url($page, $url, $first_url = NULL)
 	{
-		return self::str_template($first_url && $page === 1 ? $first_url : $url, array('page' => $page));
+		return static::str_template($first_url && $page === 1 ? $first_url : $url, array('page' => $page));
 	}
 	
 	/**
@@ -158,7 +158,7 @@ class Kohana_LogReader_URL
 		
 		if ($start !== 1)
 		{
-			array_push($pages, array('title' => 1, 'url' => self::page_url(1, $url, $first_url)));
+			array_push($pages, array('title' => 1, 'url' => static::page_url(1, $url, $first_url)));
 			
 			if ($start !== 2)
 			{
@@ -168,7 +168,7 @@ class Kohana_LogReader_URL
 		
 		for ($i = $start; $i <= $end; $i++)
 		{
-			array_push($pages, array('title' => $i, 'url' => self::page_url($i, $url, $first_url)));
+			array_push($pages, array('title' => $i, 'url' => static::page_url($i, $url, $first_url)));
 		}
 		
 		if ($end !== $total)
@@ -178,7 +178,7 @@ class Kohana_LogReader_URL
 				array_push($pages, array('title' => '...'));
 			}
 			
-			array_push($pages, array('title' => $total, 'url' => self::page_url($total, $url, $first_url)));
+			array_push($pages, array('title' => $total, 'url' => static::page_url($total, $url, $first_url)));
 		}
 		
 		$previous = $current_original - 1;
@@ -189,7 +189,7 @@ class Kohana_LogReader_URL
 		}
 		else
 		{
-			array_unshift($pages, array('title' => 'previous', 'url' => self::page_url($previous, $url, $first_url)));
+			array_unshift($pages, array('title' => 'previous', 'url' => static::page_url($previous, $url, $first_url)));
 		}
 		
 		$next = $current_original + 1;
@@ -200,7 +200,7 @@ class Kohana_LogReader_URL
 		}
 		else
 		{
-			array_push($pages, array('title' => 'next', 'url' => self::page_url($next, $url, $first_url)));
+			array_push($pages, array('title' => 'next', 'url' => static::page_url($next, $url, $first_url)));
 		}
 		
 		return $pages;

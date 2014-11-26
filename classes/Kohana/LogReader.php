@@ -64,11 +64,11 @@ class Kohana_LogReader
 	 */
 	public static function init($config)
 	{
-		self::$config = $config;
+		static::$config = $config;
 
-		$store_class = 'LogReader_Store_' . self::$config['store']['type'];
+		$store_class = 'LogReader_Store_' . static::$config['store']['type'];
 
-		self::$store = new $store_class(self::$config['store']);
+		static::$store = new $store_class(static::$config['store']);
 	}
 	
 	/**
@@ -78,7 +78,7 @@ class Kohana_LogReader
 	 */
 	public static function get_static_route()
 	{
-		return self::$config['static_route'];
+		return static::$config['static_route'];
 	}
 	
 	/**
@@ -88,7 +88,7 @@ class Kohana_LogReader
 	 */
 	public static function is_tester_available()
 	{
-		return self::$config['tester'];
+		return static::$config['tester'];
 	}
 	
 	/**
@@ -98,7 +98,7 @@ class Kohana_LogReader
 	 */
 	public static function is_authentication_required()
 	{
-		return self::$config['authentication'];
+		return static::$config['authentication'];
 	}
 	
 	/**
@@ -110,7 +110,7 @@ class Kohana_LogReader
 	 */
 	public static function get_user_by_username_and_password($username, $password)
 	{
-		foreach (self::$config['users'] as $user)
+		foreach (static::$config['users'] as $user)
 		{
 			if ($user['username'] === $username && $user['password'] === $password)
 			{
@@ -128,7 +128,7 @@ class Kohana_LogReader
 	 */
 	public static function get_auto_refresh_interval()
 	{
-		return self::$config['auto_refresh_interval'];
+		return static::$config['auto_refresh_interval'];
 	}
 	
 	/**
@@ -158,9 +158,9 @@ class Kohana_LogReader
 		$filters['query_string'] = '';
 		
 		// Get maximum number of messages from config
-		$filters['limit'] = $filters['limit'] ? $filters['limit'] : self::$config['limit'];
+		$filters['limit'] = $filters['limit'] ? $filters['limit'] : static::$config['limit'];
 		
-		$use_in_qs['limit'] = $filters['limit'] !== self::$config['limit'];
+		$use_in_qs['limit'] = $filters['limit'] !== static::$config['limit'];
 		
 		if ($use_in_qs['limit'])
 		{
@@ -187,7 +187,7 @@ class Kohana_LogReader
 		{
 			foreach ($filters['levels'] as $key => $level)
 			{
-				if (!in_array($level, LogReader::$levels, TRUE))
+				if (!in_array($level, static::$levels, TRUE))
 				{
 					unset($filters['levels'][$key]);
 				}
@@ -266,7 +266,7 @@ class Kohana_LogReader
 	 */
 	public static function get_message($message_id)
 	{
-		return self::$store->get_message($message_id);
+		return static::$store->get_message($message_id);
 	}
 	
 	/**
@@ -284,7 +284,7 @@ class Kohana_LogReader
 	 */
 	public static function get_messages($date_from = FALSE, $date_to = FALSE, $limit = 10, $offset = 0, $search = NULL, $levels = array(), $ids = array(), $from_id = NULL)
 	{
-		return self::$store->get_messages($date_from, $date_to, $limit, $offset, $search, $levels, $ids, $from_id);
+		return static::$store->get_messages($date_from, $date_to, $limit, $offset, $search, $levels, $ids, $from_id);
 	}
 	
 }
