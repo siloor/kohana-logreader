@@ -42,9 +42,9 @@ class Kohana_LogReader_URL
 	 */
 	public static function static_base()
 	{
-		if (Valid::url(LogReader::$config['static_route']))
+		if (Valid::url(LogReader::get_static_route()))
 		{
-			return LogReader::$config['static_route'] . '/';
+			return LogReader::get_static_route() . '/';
 		}
 		else
 		{

@@ -27,7 +27,7 @@ class Kohana_Controller_LogReaderAPI extends LogReader_Controller
 	// Create test message
 	public function action_create_test_message()
 	{
-		if (LogReader::$config['tester'])
+		if (LogReader::is_tester_available())
 		{
 			Log::instance()->add(Log::NOTICE, 'Test message created! Client '. Request::$client_ip . ' User-agent ' . Request::$user_agent);
 		}
@@ -75,7 +75,7 @@ class Kohana_Controller_LogReaderAPI extends LogReader_Controller
 
 		$view->filters = $filters;
 
-		$view->auto_refresh_time = LogReader::$config['auto_refresh_interval'];
+		$view->auto_refresh_time = LogReader::get_auto_refresh_interval();
 
 		// Get log messages
 		$view->messages = LogReader::get_messages(

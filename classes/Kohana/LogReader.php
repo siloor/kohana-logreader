@@ -72,13 +72,33 @@ class Kohana_LogReader
 	}
 	
 	/**
+	 * Returns LogReader static route.
+	 * 
+	 * @return  string
+	 */
+	public static function get_static_route()
+	{
+		return self::$config['static_route'];
+	}
+	
+	/**
+	 * Returns true, if tester is available.
+	 * 
+	 * @return  boolean
+	 */
+	public static function is_tester_available()
+	{
+		return self::$config['tester'];
+	}
+	
+	/**
 	 * Returns true, if authentication is required.
 	 * 
 	 * @return  boolean
 	 */
 	public static function is_authentication_required()
 	{
-		return (bool) self::$config['authentication'];
+		return self::$config['authentication'];
 	}
 	
 	/**
@@ -99,6 +119,16 @@ class Kohana_LogReader
 		}
 		
 		return NULL;
+	}
+	
+	/**
+	 * Returns LogReader auto refresh interval.
+	 * 
+	 * @return  int
+	 */
+	public static function get_auto_refresh_interval()
+	{
+		return self::$config['auto_refresh_interval'];
 	}
 	
 	/**
