@@ -47,7 +47,7 @@
 						<li <?php if ($content->name === 'messages') print 'class="active"'; ?>><a href="<?php print LogReader_URL::base(); ?>" title="Messages">Messages</a></li>
 						<li <?php if ($content->name === 'about') print 'class="active"'; ?>><a href="<?php print LogReader_URL::base(); ?>about" title="About">About</a></li>
 					</ul>
-					<?php if ($content->name === 'messages' && LogReader::$config['tester']): ?>
+					<?php if ($content->name === 'messages' && $is_tester_available): ?>
 					<button type="button" class="btn btn-default navbar-btn" id="create-test-message-btn">Create Test Message</button>
 					<?php endif; ?>
 				</div>

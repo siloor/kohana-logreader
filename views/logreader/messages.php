@@ -29,7 +29,7 @@
 								</div>
 								<div class="form-group">
 									<label class="col-lg-1 control-label">Levels</label>
-									<?php $level_index = 0; foreach (LogReader::$levels as $level): $level_index++; ?>
+									<?php $level_index = 0; foreach ($levels as $level): $level_index++; ?>
 									<?php if (($level_index % 3) === 1): ?>
 									<div class="col-lg-2">
 									<?php endif; ?>
@@ -38,7 +38,7 @@
 												<input type="checkbox" name="levels[]" value="<?php print $level; ?>" <?php if (in_array($level, $filters['levels'])) print 'checked=""'; ?>> <?php print $level; ?>
 											</label>
 										</div>
-									<?php if (($level_index % 3) === 0 || $level_index === count(LogReader::$levels)): ?>
+									<?php if (($level_index % 3) === 0 || $level_index === count($levels)): ?>
 									</div>
 									<?php endif; ?>
 									<?php endforeach; unset($level_index); ?>

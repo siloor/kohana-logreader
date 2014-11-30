@@ -40,8 +40,6 @@ class LogReader_Store_SQLExample extends LogReader_Store
 		
 		$result = $result[0];
 		
-		$result['style'] = isset(LogReader::$styles[$result['level']]) ? LogReader::$styles[$result['level']] : 'default';
-		
 		return $result;
 	}
 
@@ -166,11 +164,6 @@ class LogReader_Store_SQLExample extends LogReader_Store
 		if (!$messages_result) return $result;
 		
 		$result['messages'] = $messages_result;
-		
-		foreach ($result['messages'] as &$message)
-		{
-			$message['style'] = isset(LogReader::$styles[$message['level']]) ? LogReader::$styles[$message['level']] : 'default';
-		}
 		
 		unset($message);
 		

@@ -23,7 +23,7 @@ class Kohana_Controller_LogReader extends LogReader_Controller
 			$current_page = 1;
 		}
 		
-		$filters = LogReader::create_filters(
+		$filters = $this->logreader->create_filters(
 			$this->request->query('message'),
 			$this->request->query('levels'),
 			$this->request->query('date-from'),
@@ -31,7 +31,7 @@ class Kohana_Controller_LogReader extends LogReader_Controller
 			$this->request->query('limit')
 		);
 		
-		$filters_for_autorefresh = LogReader::create_filters(
+		$filters_for_autorefresh = $this->logreader->create_filters(
 			$this->request->query('message'),
 			$this->request->query('levels'),
 			$this->request->query('date-from'),
@@ -51,17 +51,21 @@ class Kohana_Controller_LogReader extends LogReader_Controller
 		);
 
 		$view->user = $this->user;
+		
+		$view->is_tester_available = $this->logreader->is_tester_available();
 
 		$view->content = View::factory('logreader/messages');
 
 		$view->content->name = 'messages';
-		
+
+		$view->content->levels = $this->logreader->get_levels();
+
 		$view->content->filters = $filters;
 
-		$view->content->auto_refresh_time = LogReader::get_auto_refresh_interval();
+		$view->content->auto_refresh_time = $this->logreader->get_auto_refresh_interval();
 
 		// Get log messages
-		$view->content->messages = LogReader::get_messages(
+		$view->content->messages = $this->logreader->get_messages(
 			$filters['date-from'],
 			$filters['date-to'],
 			$filters['limit'],
@@ -94,6 +98,8 @@ class Kohana_Controller_LogReader extends LogReader_Controller
 		$view = View::factory('logreader/index');
 		
 		$view->user = $this->user;
+		
+		$view->is_tester_available = $this->logreader->is_tester_available();
 
 		$view->content = View::factory('logreader/about');
 
@@ -109,12 +115,14 @@ class Kohana_Controller_LogReader extends LogReader_Controller
 		$view = View::factory('logreader/index');
 		
 		$view->user = $this->user;
+		
+		$view->is_tester_available = $this->logreader->is_tester_available();
 
 		$view->content = View::factory('logreader/message');
 
 		$view->content->name = 'message';
 
-		$view->content->message = LogReader::get_message($this->request->param('message'));
+		$view->content->message = $this->logreader->get_message($this->request->param('message'));
 		
 		$this->response->body($view);
 	}

@@ -27,7 +27,7 @@ class Kohana_Controller_LogReaderAPI extends LogReader_Controller
 	// Create test message
 	public function action_create_test_message()
 	{
-		if (LogReader::is_tester_available())
+		if ($this->logreader->is_tester_available())
 		{
 			Log::instance()->add(Log::NOTICE, 'Test message created! Client '. Request::$client_ip . ' User-agent ' . Request::$user_agent);
 		}
@@ -48,7 +48,7 @@ class Kohana_Controller_LogReaderAPI extends LogReader_Controller
 			$current_page = 1;
 		}
 		
-		$filters = LogReader::create_filters(
+		$filters = $this->logreader->create_filters(
 			$this->request->query('message'),
 			$this->request->query('levels'),
 			$this->request->query('date-from'),
@@ -62,7 +62,7 @@ class Kohana_Controller_LogReaderAPI extends LogReader_Controller
 		
 		$all_matches_before_id = $from_id ? (int) $this->request->query('all_matches_before_id') : 0;
 		
-		$filters_for_autorefresh = LogReader::create_filters(
+		$filters_for_autorefresh = $this->logreader->create_filters(
 			$this->request->query('message'),
 			$this->request->query('levels'),
 			$this->request->query('date-from'),
@@ -75,10 +75,10 @@ class Kohana_Controller_LogReaderAPI extends LogReader_Controller
 
 		$view->filters = $filters;
 
-		$view->auto_refresh_time = LogReader::get_auto_refresh_interval();
+		$view->auto_refresh_time = $this->logreader->get_auto_refresh_interval();
 
 		// Get log messages
-		$view->messages = LogReader::get_messages(
+		$view->messages = $this->logreader->get_messages(
 			$filters['date-from'],
 			$filters['date-to'],
 			$filters['limit'],

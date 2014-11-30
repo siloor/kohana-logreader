@@ -15,17 +15,21 @@ class Kohana_LogReader_Controller extends Kohana_Controller
 	// Authenticated user
 	protected $user = NULL;
 	
+	protected $logreader;
+	
 	public function before()
 	{
 		parent::before();
 		
+		$this->logreader = new LogReader();
+		
 		// Authentication if required
-		if (LogReader::is_authentication_required())
+		if ($this->logreader->is_authentication_required())
 		{
 			// Use HTTP basic authentication
 			if (isset($_SERVER['PHP_AUTH_USER']) && isset($_SERVER['PHP_AUTH_PW']))
 			{
-				$this->user = LogReader::get_user_by_username_and_password($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']);
+				$this->user = $this->logreader->get_user_by_username_and_password($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']);
 			}
 			
 			// Set Authentication required response if needed

@@ -292,7 +292,6 @@ class Kohana_LogReader_Store_File extends LogReader_Store
 							$log['date'] = date('Y.m.d.', strtotime($date));
 							$log['time'] = date('H:i:s', strtotime($matches[1]));
 							$log['level'] = $matches[2];
-							$log['style'] = isset(LogReader::$styles[$log['level']]) ? LogReader::$styles[$log['level']] : 'default';
 							$log['trace'] = array();
 							$log['type'] = $matches[3];
 							$log['message'] = $matches[4];

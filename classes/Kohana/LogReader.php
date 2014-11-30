@@ -24,21 +24,30 @@ class Kohana_LogReader
 	 * 
 	 * @var  LogReader_Store
 	 */
-	public static $store;
+	protected $store;
+
+	// Log message level constants
+	const LEVEL_WARNING   = 'WARNING';
+	const LEVEL_DEBUG     = 'DEBUG';
+	const LEVEL_ERROR     = 'ERROR';
+	const LEVEL_CRITICAL  = 'CRITICAL';
+	const LEVEL_EMERGENCY = 'EMERGENCY';
+	const LEVEL_NOTICE    = 'NOTICE';
+	const LEVEL_INFO      = 'INFO';
 
 	/**
 	 * Log message levels
 	 * 
 	 * @var  array
 	 */
-	public static $levels = array(
-			'WARNING',
-			'DEBUG',
-			'ERROR',
-			'CRITICAL',
-			'EMERGENCY',
-			'NOTICE',
-			'INFO',
+	protected $levels = array(
+			self::LEVEL_WARNING,
+			self::LEVEL_DEBUG,
+			self::LEVEL_ERROR,
+			self::LEVEL_CRITICAL,
+			self::LEVEL_EMERGENCY,
+			self::LEVEL_NOTICE,
+			self::LEVEL_INFO,
 		);
 	
 	/**
@@ -46,29 +55,26 @@ class Kohana_LogReader
 	 * 
 	 * @var  array
 	 */
-	public static $styles = array(
-			'WARNING' => 'warning',
-			'DEBUG' => 'warning',
-			'ERROR' => 'danger',
-			'CRITICAL' => 'danger',
-			'EMERGENCY' => 'danger',
-			'NOTICE' => 'info',
-			'INFO' => 'primary',
+	protected $styles = array(
+			self::LEVEL_WARNING   => 'warning',
+			self::LEVEL_DEBUG     => 'warning',
+			self::LEVEL_ERROR     => 'danger',
+			self::LEVEL_CRITICAL  => 'danger',
+			self::LEVEL_EMERGENCY => 'danger',
+			self::LEVEL_NOTICE    => 'info',
+			self::LEVEL_INFO      => 'primary',
 		);
-
+	
 	/**
-	 * Initialize LogReader
-	 * 
-	 * @param   array  $config  Configuration for LogReader
-	 * @return  void
+	 * Constructs the LogReader object.
+	 *
+	 * @param array Configuration for the reader
 	 */
-	public static function init($config)
+	public function __construct()
 	{
-		static::$config = $config;
-
 		$store_class = 'LogReader_Store_' . static::$config['store']['type'];
-
-		static::$store = new $store_class(static::$config['store']);
+		
+		$this->store = new $store_class(static::$config['store']);
 	}
 	
 	/**
@@ -82,11 +88,21 @@ class Kohana_LogReader
 	}
 	
 	/**
+	 * Returns LogReader log message levels.
+	 * 
+	 * @return  array
+	 */
+	public function get_levels()
+	{
+		return $this->levels;
+	}
+	
+	/**
 	 * Returns true, if tester is available.
 	 * 
 	 * @return  boolean
 	 */
-	public static function is_tester_available()
+	public function is_tester_available()
 	{
 		return static::$config['tester'];
 	}
@@ -96,7 +112,7 @@ class Kohana_LogReader
 	 * 
 	 * @return  boolean
 	 */
-	public static function is_authentication_required()
+	public function is_authentication_required()
 	{
 		return static::$config['authentication'];
 	}
@@ -108,7 +124,7 @@ class Kohana_LogReader
 	 * @param   string  $password  Password of the user.
 	 * @return  array
 	 */
-	public static function get_user_by_username_and_password($username, $password)
+	public function get_user_by_username_and_password($username, $password)
 	{
 		foreach (static::$config['users'] as $user)
 		{
@@ -126,13 +142,13 @@ class Kohana_LogReader
 	 * 
 	 * @return  int
 	 */
-	public static function get_auto_refresh_interval()
+	public function get_auto_refresh_interval()
 	{
 		return static::$config['auto_refresh_interval'];
 	}
 	
 	/**
-	 * Validate and extend the given filters
+	 * Validate and extend the given filters.
 	 * 
 	 * @param   string  $search     The message filter
 	 * @param   array   $levels     The levels filter
@@ -141,7 +157,7 @@ class Kohana_LogReader
 	 * @param   int     $limit      Limit for messages
 	 * @return  array
 	 */
-	public static function create_filters($message = NULL, $levels = array(), $date_from = NULL, $date_to = NULL, $limit = 0)
+	public function create_filters($message = NULL, $levels = array(), $date_from = NULL, $date_to = NULL, $limit = 0)
 	{
 		// Use parameters in query string
 		$use_in_qs = array();
@@ -187,7 +203,7 @@ class Kohana_LogReader
 		{
 			foreach ($filters['levels'] as $key => $level)
 			{
-				if (!in_array($level, static::$levels, TRUE))
+				if (!in_array($level, $this->get_levels(), TRUE))
 				{
 					unset($filters['levels'][$key]);
 				}
@@ -259,18 +275,24 @@ class Kohana_LogReader
 	}
 	
 	/**
-	 * Returns the log message by Id
+	 * Returns the log message by Id.
 	 * 
 	 * @param   string  $message_id  Id of the log message
 	 * @return  array
 	 */
-	public static function get_message($message_id)
+	public function get_message($message_id)
 	{
-		return static::$store->get_message($message_id);
+		$message = $this->store->get_message($message_id);
+		
+		if ($message === NULL) return $message;
+		
+		$message['style'] = isset($this->styles[$message['level']]) ? $this->styles[$message['level']] : 'default';
+		
+		return $message;
 	}
 	
 	/**
-	 * Returns log messages
+	 * Returns log messages.
 	 * 
 	 * @param   string  $date_from  Start date of log messages (if not given, it starts with the first log)
 	 * @param   string  $date_to    End date of log messages (if not given, it ends with the last log)
@@ -282,9 +304,18 @@ class Kohana_LogReader
 	 * @param   array   $from_id    Newer messages from specific id
 	 * @return  array   Limited matched messages and the count of matched log messages
 	 */
-	public static function get_messages($date_from = FALSE, $date_to = FALSE, $limit = 10, $offset = 0, $search = NULL, $levels = array(), $ids = array(), $from_id = NULL)
+	public function get_messages($date_from = FALSE, $date_to = FALSE, $limit = 10, $offset = 0, $search = NULL, $levels = array(), $ids = array(), $from_id = NULL)
 	{
-		return static::$store->get_messages($date_from, $date_to, $limit, $offset, $search, $levels, $ids, $from_id);
+		$messages = $this->store->get_messages($date_from, $date_to, $limit, $offset, $search, $levels, $ids, $from_id);
+		
+		foreach ($messages['messages'] as &$message)
+		{
+			$message['style'] = isset($this->styles[$message['level']]) ? $this->styles[$message['level']] : 'default';
+		}
+		
+		unset($message);
+		
+		return $messages;
 	}
 	
 }
