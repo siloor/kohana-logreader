@@ -73,6 +73,8 @@ class Kohana_Controller_LogReaderAPI extends LogReader_Controller
 		// Create view for the messages page
 		$view = View::factory('logreader/messages');
 
+		$view->levels = $this->logreader->get_levels();
+		
 		$view->filters = $filters;
 
 		$view->auto_refresh_time = $this->logreader->get_auto_refresh_interval();
