@@ -17,7 +17,7 @@ class Kohana_LogReader
 	 * 
 	 * @var  array
 	 */
-	public static $config;
+	protected static $config;
 
 	/**
 	 * LogReader store
@@ -75,6 +75,26 @@ class Kohana_LogReader
 		$store_class = 'LogReader_Store_' . static::$config['store']['type'];
 		
 		$this->store = new $store_class(static::$config['store']);
+	}
+	
+	/**
+	 * Sets LogReader configuration.
+	 * 
+	 * @return  void
+	 */
+	public static function set_configuration($config)
+	{
+		static::$config = $config;
+	}
+	
+	/**
+	 * Returns LogReader route.
+	 * 
+	 * @return  string
+	 */
+	public static function get_route()
+	{
+		return static::$config['route'];
 	}
 	
 	/**
