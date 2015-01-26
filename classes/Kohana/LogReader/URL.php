@@ -13,6 +13,13 @@
 class Kohana_LogReader_URL
 {
 	/**
+	 * LogReader static route
+	 * 
+	 * @var  array
+	 */
+	public static $static_route;
+	
+	/**
 	 * Returns LogReader base url
 	 * 
 	 * @return  string
@@ -42,9 +49,9 @@ class Kohana_LogReader_URL
 	 */
 	public static function static_base()
 	{
-		if (Valid::url(LogReader::get_static_route()))
+		if (Valid::url(static::$static_route))
 		{
-			return LogReader::get_static_route() . '/';
+			return static::$static_route . '/';
 		}
 		else
 		{

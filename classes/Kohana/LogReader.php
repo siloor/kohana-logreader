@@ -17,7 +17,7 @@ class Kohana_LogReader
 	 * 
 	 * @var  array
 	 */
-	protected static $config;
+	protected $config;
 
 	/**
 	 * LogReader store
@@ -67,44 +67,17 @@ class Kohana_LogReader
 	
 	/**
 	 * Constructs the LogReader object.
+	 * 
+	 * @param  LogReader_Config  $config  LogReader config.
+	 * @param  LogReader_Store   $store   LogReader store.
 	 *
 	 * @param array Configuration for the reader
 	 */
-	public function __construct()
+	public function __construct($config, $store)
 	{
-		$store_class = 'LogReader_Store_' . static::$config['store']['type'];
+		$this->config = $config;
 		
-		$this->store = new $store_class(static::$config['store']);
-	}
-	
-	/**
-	 * Sets LogReader configuration.
-	 * 
-	 * @return  void
-	 */
-	public static function set_configuration($config)
-	{
-		static::$config = $config;
-	}
-	
-	/**
-	 * Returns LogReader route.
-	 * 
-	 * @return  string
-	 */
-	public static function get_route()
-	{
-		return static::$config['route'];
-	}
-	
-	/**
-	 * Returns LogReader static route.
-	 * 
-	 * @return  string
-	 */
-	public static function get_static_route()
-	{
-		return static::$config['static_route'];
+		$this->store = $store;
 	}
 	
 	/**
@@ -118,26 +91,6 @@ class Kohana_LogReader
 	}
 	
 	/**
-	 * Returns true, if tester is available.
-	 * 
-	 * @return  boolean
-	 */
-	public function is_tester_available()
-	{
-		return static::$config['tester'];
-	}
-	
-	/**
-	 * Returns true, if authentication is required.
-	 * 
-	 * @return  boolean
-	 */
-	public function is_authentication_required()
-	{
-		return static::$config['authentication'];
-	}
-	
-	/**
 	 * Returns user data by the given username and password.
 	 * 
 	 * @param   string  $username  Username of the user.
@@ -146,7 +99,7 @@ class Kohana_LogReader
 	 */
 	public function get_user_by_username_and_password($username, $password)
 	{
-		foreach (static::$config['users'] as $user)
+		foreach ($this->config->get_users() as $user)
 		{
 			if ($user['username'] === $username && $user['password'] === $password)
 			{
@@ -155,16 +108,6 @@ class Kohana_LogReader
 		}
 		
 		return NULL;
-	}
-	
-	/**
-	 * Returns LogReader auto refresh interval.
-	 * 
-	 * @return  int
-	 */
-	public function get_auto_refresh_interval()
-	{
-		return static::$config['auto_refresh_interval'];
 	}
 	
 	/**
@@ -194,9 +137,9 @@ class Kohana_LogReader
 		$filters['query_string'] = '';
 		
 		// Get maximum number of messages from config
-		$filters['limit'] = $filters['limit'] ? $filters['limit'] : static::$config['limit'];
+		$filters['limit'] = $filters['limit'] ? $filters['limit'] : $this->config->get_message_limit();
 		
-		$use_in_qs['limit'] = $filters['limit'] !== static::$config['limit'];
+		$use_in_qs['limit'] = $filters['limit'] !== $this->config->get_message_limit();
 		
 		if ($use_in_qs['limit'])
 		{
@@ -321,7 +264,7 @@ class Kohana_LogReader
 	 * @param   string  $search     The message filter
 	 * @param   array   $levels     The levels filter
 	 * @param   array   $ids        The ids filter
-	 * @param   array   $from_id    Newer messages from specific id
+	 * @param   string  $from_id    Newer messages from specific id
 	 * @return  array   Limited matched messages and the count of matched log messages
 	 */
 	public function get_messages($date_from = FALSE, $date_to = FALSE, $limit = 10, $offset = 0, $search = NULL, $levels = array(), $ids = array(), $from_id = NULL)

@@ -52,7 +52,7 @@ class Kohana_Controller_LogReader extends LogReader_Controller
 
 		$view->user = $this->user;
 		
-		$view->is_tester_available = $this->logreader->is_tester_available();
+		$view->is_tester_available = $this->logreader_config->is_tester_available();
 
 		$view->content = View::factory('logreader/messages');
 
@@ -62,7 +62,7 @@ class Kohana_Controller_LogReader extends LogReader_Controller
 
 		$view->content->filters = $filters;
 
-		$view->content->auto_refresh_time = $this->logreader->get_auto_refresh_interval();
+		$view->content->auto_refresh_time = $this->logreader_config->get_auto_refresh_interval();
 
 		// Get log messages
 		$view->content->messages = $this->logreader->get_messages(
@@ -98,8 +98,6 @@ class Kohana_Controller_LogReader extends LogReader_Controller
 		$view = View::factory('logreader/index');
 		
 		$view->user = $this->user;
-		
-		$view->is_tester_available = $this->logreader->is_tester_available();
 
 		$view->content = View::factory('logreader/about');
 
@@ -113,10 +111,8 @@ class Kohana_Controller_LogReader extends LogReader_Controller
 	{
 		// Create view for the about page
 		$view = View::factory('logreader/index');
-		
+
 		$view->user = $this->user;
-		
-		$view->is_tester_available = $this->logreader->is_tester_available();
 
 		$view->content = View::factory('logreader/message');
 

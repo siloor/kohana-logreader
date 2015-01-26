@@ -12,19 +12,43 @@
  */
 class Kohana_LogReader_Controller extends Kohana_Controller
 {
-	// Authenticated user
+	/**
+	 * Autheticated user object.
+	 * 
+	 * @var  array
+	 */
 	protected $user = NULL;
 	
+	/**
+	 * LogReader object.
+	 * 
+	 * @var  LogReader
+	 */
 	protected $logreader;
+	
+	/**
+	 * LogReader config object.
+	 * 
+	 * @var  LogReader_Config
+	 */
+	protected $logreader_config;
 	
 	public function before()
 	{
 		parent::before();
 		
-		$this->logreader = new LogReader();
+		$this->logreader_config = new LogReader_Config(Kohana::$config->load('logreader'));
+		
+		$store = $this->logreader_config->get_store();
+		
+		$store_class = 'LogReader_Store_' . $store['type'];
+		
+		$logreader_store = new $store_class($store);
+		
+		$this->logreader = new LogReader($this->logreader_config, $logreader_store);
 		
 		// Authentication if required
-		if ($this->logreader->is_authentication_required())
+		if ($this->logreader_config->is_authentication_required())
 		{
 			// Use HTTP basic authentication
 			if (isset($_SERVER['PHP_AUTH_USER']) && isset($_SERVER['PHP_AUTH_PW']))
