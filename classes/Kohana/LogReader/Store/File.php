@@ -42,7 +42,7 @@ class Kohana_LogReader_Store_File extends LogReader_Store
 	 * @param   string  $from_id    Newer messages from specific id
 	 * @return  array   Limited matched messages and the count of matched log messages
 	 */
-	public function get_messages($date_from = FALSE, $date_to = FALSE, $limit = 10, $offset = 0, $search = NULL, $levels = array(), $ids = array(), $from_id = NULL)
+	public function get_messages($date_from = FALSE, $date_to = FALSE, $limit = 10, $offset = 0, $search = NULL, array $levels = array(), array $ids = array(), $from_id = NULL)
 	{
 		$date_from = strtotime($date_from);
 		$date_to = strtotime($date_to);
@@ -198,7 +198,7 @@ class Kohana_LogReader_Store_File extends LogReader_Store
 	 * @param   string  $from_id  Newer messages from specific id
 	 * @return  array   Limited matched messages and the count of matched log messages
 	 */
-	protected function get_daily_messages($date, $limit = 10, $offset = 0, $search = NULL, $levels = array(), $ids = array(), $from_id = NULL)
+	protected function get_daily_messages($date, $limit = 10, $offset = 0, $search = NULL, array $levels = array(), array $ids = array(), $from_id = NULL)
 	{
 		$result = array('all_matches' => 0, 'messages' => array());
 		
@@ -419,7 +419,7 @@ class Kohana_LogReader_Store_File extends LogReader_Store
 	 * @param   string  $from_id  Newer messages from specific id
 	 * @return  boolean
 	 */
-	protected function check_filters($id, $message, $search, $levels, $ids, $from_id)
+	protected function check_filters($id, $message, $search, array $levels, array $ids, $from_id)
 	{
 		if ($levels)
 		{

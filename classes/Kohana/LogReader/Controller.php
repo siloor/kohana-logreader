@@ -37,7 +37,7 @@ class Kohana_LogReader_Controller extends Kohana_Controller
 	{
 		parent::before();
 		
-		$this->logreader_config = new LogReader_Config(Kohana::$config->load('logreader'));
+		$this->logreader_config = new LogReader_Config(Kohana::$config->load('logreader')->as_array());
 		
 		$store = $this->logreader_config->get_store();
 		
@@ -47,7 +47,6 @@ class Kohana_LogReader_Controller extends Kohana_Controller
 		
 		$this->logreader = new LogReader($this->logreader_config, $logreader_store);
 		
-		// Authentication if required
 		if ($this->logreader_config->is_authentication_required())
 		{
 			// Use HTTP basic authentication

@@ -70,10 +70,8 @@ class Kohana_LogReader
 	 * 
 	 * @param  LogReader_Config  $config  LogReader config.
 	 * @param  LogReader_Store   $store   LogReader store.
-	 *
-	 * @param array Configuration for the reader
 	 */
-	public function __construct($config, $store)
+	public function __construct(LogReader_Config $config, LogReader_Store $store)
 	{
 		$this->config = $config;
 		
@@ -113,14 +111,14 @@ class Kohana_LogReader
 	/**
 	 * Validate and extend the given filters.
 	 * 
-	 * @param   string  $search     The message filter
+	 * @param   string  $message    The message filter
 	 * @param   array   $levels     The levels filter
 	 * @param   string  $date_from  Start date of log messages (if not given, it starts with the first log)
 	 * @param   string  $date_to    End date of log messages (if not given, it ends with the last log)
 	 * @param   int     $limit      Limit for messages
 	 * @return  array
 	 */
-	public function create_filters($message = NULL, $levels = array(), $date_from = NULL, $date_to = NULL, $limit = 0)
+	public function create_filters($message = NULL, array $levels = array(), $date_from = NULL, $date_to = NULL, $limit = 0)
 	{
 		// Use parameters in query string
 		$use_in_qs = array();
@@ -162,26 +160,19 @@ class Kohana_LogReader
 		}
 
 		// Validate levels filter
-		if (isset($filters['levels']) && $filters['levels'] && is_array($filters['levels']))
+		foreach ($filters['levels'] as $key => $level)
 		{
-			foreach ($filters['levels'] as $key => $level)
+			if (!in_array($level, $this->get_levels(), TRUE))
 			{
-				if (!in_array($level, $this->get_levels(), TRUE))
-				{
-					unset($filters['levels'][$key]);
-				}
-				else
-				{
-					$filters['query_string'] .= '&levels[]=' . $level;
-				}
+				unset($filters['levels'][$key]);
 			}
-			
-			unset($key, $level);
+			else
+			{
+				$filters['query_string'] .= '&levels[]=' . $level;
+			}
 		}
-		else
-		{
-			$filters['levels'] = array();
-		}
+		
+		unset($key, $level);
 		
 		// Validate date parameters
 		$filters['date-from'] = strtotime($filters['date-from']);
@@ -234,6 +225,11 @@ class Kohana_LogReader
 		
 		$filters['query_string'] = substr($filters['query_string'], 1);
 		
+		if ($filters['query_string'] === FALSE)
+		{
+			$filters['query_string'] = '';
+		}
+		
 		return $filters;
 	}
 	
@@ -267,7 +263,7 @@ class Kohana_LogReader
 	 * @param   string  $from_id    Newer messages from specific id
 	 * @return  array   Limited matched messages and the count of matched log messages
 	 */
-	public function get_messages($date_from = FALSE, $date_to = FALSE, $limit = 10, $offset = 0, $search = NULL, $levels = array(), $ids = array(), $from_id = NULL)
+	public function get_messages($date_from = FALSE, $date_to = FALSE, $limit = 10, $offset = 0, $search = NULL, array $levels = array(), array $ids = array(), $from_id = NULL)
 	{
 		$messages = $this->store->get_messages($date_from, $date_to, $limit, $offset, $search, $levels, $ids, $from_id);
 		

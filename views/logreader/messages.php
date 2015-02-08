@@ -1,7 +1,7 @@
 			<script>
 			var autoRefreshUrl = '<?php print $auto_refresh_url; ?>';
 			var filters = <?php print json_encode($filters); ?>;
-			var allMatches = <?php print $all_matches; ?>;
+			var allMatchesBeforeId = <?php print $all_matches_before_id; ?>;
 			var autoRefreshTime = <?php print $auto_refresh_time; ?>;
 			</script>
 			<div id="result-alert-container" class="container-fluid"></div>

@@ -15,31 +15,26 @@ class Kohana_Controller_LogReader extends LogReader_Controller
 	// Messages page
 	public function action_index()
 	{
-		// Get page number from query
 		$current_page = (int) $this->request->query('page');
+		$message = $this->request->query('message');
+		$levels = $this->request->query('levels');
+		$date_from = $this->request->query('date-from');
+		$date_to = $this->request->query('date-to');
+		$limit = $this->request->query('limit');
 		
 		if ($current_page < 1)
 		{
 			$current_page = 1;
 		}
 		
-		$filters = $this->logreader->create_filters(
-			$this->request->query('message'),
-			$this->request->query('levels'),
-			$this->request->query('date-from'),
-			$this->request->query('date-to'),
-			$this->request->query('limit')
-		);
+		if (!is_array($levels))
+		{
+			$levels = array();
+		}
 		
-		$filters_for_autorefresh = $this->logreader->create_filters(
-			$this->request->query('message'),
-			$this->request->query('levels'),
-			$this->request->query('date-from'),
-			NULL,
-			$this->request->query('limit')
-		);
+		$filters = $this->logreader->create_filters($message, $levels, $date_from, $date_to, $limit);
+		$filters_for_autorefresh = $this->logreader->create_filters($message, $levels, $date_from, NULL, $limit);
 		
-		// Create view for the messages page
 		$view = View::factory('logreader/index');
 		
 		$view->stylesheets = array(
@@ -64,12 +59,13 @@ class Kohana_Controller_LogReader extends LogReader_Controller
 
 		$view->content->auto_refresh_time = $this->logreader_config->get_auto_refresh_interval();
 
-		// Get log messages
+		$offset = ($current_page - 1) * $filters['limit'];
+		
 		$view->content->messages = $this->logreader->get_messages(
 			$filters['date-from'],
 			$filters['date-to'],
 			$filters['limit'],
-			($current_page - 1) * $filters['limit'],
+			$offset,
 			$filters['message']['text'] && $filters['message']['valid'] ? $filters['message']['text'] : NULL,
 			$filters['levels'],
 			array(),
@@ -77,6 +73,7 @@ class Kohana_Controller_LogReader extends LogReader_Controller
 		);
 		
 		$view->content->all_matches = $view->content->messages['all_matches'];
+		$view->content->all_matches_before_id = $view->content->all_matches - $offset;
 		
 		$view->content->messages = $view->content->messages['messages'];
 		
@@ -94,7 +91,6 @@ class Kohana_Controller_LogReader extends LogReader_Controller
 	// About page
 	public function action_about()
 	{
-		// Create view for the about page
 		$view = View::factory('logreader/index');
 		
 		$view->user = $this->user;
@@ -109,7 +105,6 @@ class Kohana_Controller_LogReader extends LogReader_Controller
 	// Message page
 	public function action_message()
 	{
-		// Create view for the about page
 		$view = View::factory('logreader/index');
 
 		$view->user = $this->user;
@@ -126,7 +121,6 @@ class Kohana_Controller_LogReader extends LogReader_Controller
 	// Serving static files
 	public function action_media()
 	{
-		// Get the file path from the request
 		$file = $this->request->param('file');
 
 		// Find the file extension
@@ -151,7 +145,6 @@ class Kohana_Controller_LogReader extends LogReader_Controller
 		}
 		else
 		{
-			// Return a 404 status
 			$this->response->status(404);
 		}
 	}

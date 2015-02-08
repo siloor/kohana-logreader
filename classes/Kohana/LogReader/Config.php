@@ -24,7 +24,7 @@ class Kohana_LogReader_Config
 	 *
 	 * @param  array  $config  LogReader config parameters
 	 */
-	public function __construct($config)
+	public function __construct(array $config)
 	{
 		$this->config = $config;
 	}

@@ -10,4 +10,4 @@
  * @copyright   (c) 2014 Milan Magyar
  * @license     MIT
  */
-class LogReader_Store extends Kohana_LogReader_Store {}
+abstract class LogReader_Store extends Kohana_LogReader_Store {}

@@ -120,7 +120,7 @@ var refreshMessages = function() {
 			clearInterval(autoRefreshInterval);
 			
 			var inputParams = {
-				all_matches_before_id: allMatches
+				all_matches_before_id: allMatchesBeforeId
 			};
 			
 			var lastMessage = $('#content #logs tr.message:first').data('data');
@@ -132,7 +132,7 @@ var refreshMessages = function() {
 			API.callUrl('GET', autoRefreshUrl, inputParams, function(data) {
 				if (data.result) {
 					var newMessages = $(data.data.html);
-					allMatches += data.data.all_matches;
+					allMatchesBeforeId += data.data.all_matches;
 					
 					var newRows = newMessages.find('#logs tr.message');
 					

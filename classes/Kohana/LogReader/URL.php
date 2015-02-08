@@ -13,14 +13,24 @@
 class Kohana_LogReader_URL
 {
 	/**
-	 * LogReader static route
+	 * LogReader configuration.
 	 * 
-	 * @var  array
+	 * @var  LogReader_Config
 	 */
-	public static $static_route;
+	protected static $config;
 	
 	/**
-	 * Returns LogReader base url
+	 * Sets LogReader configuration.
+	 * 
+	 * @param  LogReader_Config  $config  LogReader config.
+	 */
+	public static function set_configuration(LogReader_Config $config)
+	{
+		static::$config = $config;
+	}
+	
+	/**
+	 * Returns LogReader base url.
 	 * 
 	 * @return  string
 	 * @uses    URL::base()
@@ -31,7 +41,7 @@ class Kohana_LogReader_URL
 	}
 	
 	/**
-	 * Returns LogReader API url
+	 * Returns LogReader API url.
 	 * 
 	 * @return  string
 	 * @uses    URL::base()
@@ -42,16 +52,16 @@ class Kohana_LogReader_URL
 	}
 	
 	/**
-	 * Returns LogReader static url
+	 * Returns LogReader static url.
 	 * 
 	 * @return  string
 	 * @uses    URL::base()
 	 */
 	public static function static_base()
 	{
-		if (Valid::url(static::$static_route))
+		if (Valid::url(static::$config->get_static_route()))
 		{
-			return static::$static_route . '/';
+			return static::$config->get_static_route() . '/';
 		}
 		else
 		{
@@ -60,7 +70,7 @@ class Kohana_LogReader_URL
 	}
 	
 	/**
-	 * Returns Log message url
+	 * Returns Log message url.
 	 * @param   string  $message_id  Id of the log message
 	 * @return  string
 	 * @uses    URL::base()
@@ -71,7 +81,7 @@ class Kohana_LogReader_URL
 	}
 
 	/**
-	 * Returns LogReader base url with bad username and password to log user out from HTTP basic authentication
+	 * Returns LogReader base url with bad username and password to log user out from HTTP basic authentication.
 	 * 
 	 * @return  string
 	 * @uses    LogReader_URL::base()
@@ -82,13 +92,13 @@ class Kohana_LogReader_URL
 	}
 	
 	/**
-	 * Replace parameters in string by keys
+	 * Replace parameters in string by keys.
 	 * 
 	 * @param   string  $text  Template text
 	 * @param   array   $args  Array of replacements (keys are the parameters to change, values are the replacements)
 	 * @return  string
 	 */
-	public static function str_template($text, $args = array())
+	public static function str_template($text, array $args = array())
 	{
 		$text = preg_replace("/%(?!\((.*?)\))/i", '%%', $text);
 
@@ -107,7 +117,7 @@ class Kohana_LogReader_URL
 	}
 	
 	/**
-	 * Returns page url from the template
+	 * Returns page url from the template.
 	 * 
 	 * @param   integer  $page       Page number
 	 * @param   string   $url        Url template
@@ -121,7 +131,7 @@ class Kohana_LogReader_URL
 	}
 	
 	/**
-	 * Returns urls and titles to the pager in the View
+	 * Returns urls and titles to the pager in the View.
 	 * 
 	 * @param   integer  $current_original  Current page number
 	 * @param   integer  $total             Number of pages

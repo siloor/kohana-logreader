@@ -40,37 +40,30 @@ class Kohana_Controller_LogReaderAPI extends LogReader_Controller
 	// Messages page
 	public function action_messages()
 	{
-		// Get page number from query
 		$current_page = (int) $this->request->query('page');
+		$message = $this->request->query('message');
+		$levels = $this->request->query('levels');
+		$date_from = $this->request->query('date-from');
+		$date_to = $this->request->query('date-to');
+		$limit = $this->request->query('limit');
+		$from_id = $this->request->query('last_message_id');
+		$all_matches_before_id = (int) $this->request->query('all_matches_before_id');
 		
 		if ($current_page < 1)
 		{
 			$current_page = 1;
 		}
 		
-		$filters = $this->logreader->create_filters(
-			$this->request->query('message'),
-			$this->request->query('levels'),
-			$this->request->query('date-from'),
-			$this->request->query('date-to'),
-			$this->request->query('limit')
-		);
+		if (!is_array($levels))
+		{
+			$levels = array();
+		}
 		
-		$from_id = $this->request->query('last_message_id');
+		$all_matches_before_id = $from_id ? $all_matches_before_id : 0;
 		
-		$from_id = isset($from_id) ? $from_id : NULL;
-		
-		$all_matches_before_id = $from_id ? (int) $this->request->query('all_matches_before_id') : 0;
-		
-		$filters_for_autorefresh = $this->logreader->create_filters(
-			$this->request->query('message'),
-			$this->request->query('levels'),
-			$this->request->query('date-from'),
-			NULL,
-			$this->request->query('limit')
-		);
+		$filters = $this->logreader->create_filters($message, $levels, $date_from, $date_to, $limit);
+		$filters_for_autorefresh = $this->logreader->create_filters($message, $levels, $date_from, NULL, $limit);
 
-		// Create view for the messages page
 		$view = View::factory('logreader/messages');
 
 		$view->levels = $this->logreader->get_levels();
@@ -79,12 +72,13 @@ class Kohana_Controller_LogReaderAPI extends LogReader_Controller
 
 		$view->auto_refresh_time = $this->logreader_config->get_auto_refresh_interval();
 
-		// Get log messages
+		$offset = ($current_page - 1) * $filters['limit'];
+		
 		$view->messages = $this->logreader->get_messages(
 			$filters['date-from'],
 			$filters['date-to'],
 			$filters['limit'],
-			($current_page - 1) * $filters['limit'],
+			$offset,
 			$filters['message']['text'] && $filters['message']['valid'] ? $filters['message']['text'] : NULL,
 			$filters['levels'],
 			array(),
@@ -92,6 +86,7 @@ class Kohana_Controller_LogReaderAPI extends LogReader_Controller
 		);
 		
 		$view->all_matches = $view->messages['all_matches'];
+		$view->all_matches_before_id = $view->all_matches - $offset;
 		
 		$view->messages = $view->messages['messages'];
 		
