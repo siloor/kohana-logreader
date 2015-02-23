@@ -22,11 +22,20 @@ class Kohana_LogReaderTest extends Kohana_Unittest_TestCase
 	{
 		parent::setUp();
 		
-		$this->config = new LogReader_Config(Kohana::load(realpath(__DIR__ . '/../test_data/config/logreader.php')));
+		$this->config = $this->getMockBuilder('LogReader_Config')
+			->setConstructorArgs(array(array()))
+			->getMock();
+		
+		$this->config
+			->expects($this->any())
+			->method('get_store')
+			->will($this->returnValue(array(
+				'type' => 'File',
+				'path' => APPPATH . 'logs',
+			)));
 		
 		$this->store = $this->getMockBuilder('LogReader_Store')
 			->setConstructorArgs(array($this->config->get_store()))
-			->setMethods(array('get_message'))
 			->getMockForAbstractClass();
 		
 		$this->logreader = new LogReader($this->config, $this->store);
@@ -58,7 +67,7 @@ class Kohana_LogReaderTest extends Kohana_Unittest_TestCase
 	}
 	
 	/**
-	 * Data provider for test_get_user_by_username_and_password
+	 * Data provider for test_get_user_by_username_and_password.
 	 *
 	 * @return  array
 	 */
@@ -90,6 +99,16 @@ class Kohana_LogReaderTest extends Kohana_Unittest_TestCase
 	 */
 	public function test_get_user_by_username_and_password($expected, $username, $password)
 	{
+		$this->config
+			->expects($this->any())
+			->method('get_users')
+			->will($this->returnValue(array(
+				array(
+					'username' => 'admin',
+					'password' => '123456',
+				),
+			)));
+		
 		$this->assertSame(
 			$expected,
 			$this->logreader->get_user_by_username_and_password($username, $password)
@@ -107,70 +126,70 @@ class Kohana_LogReaderTest extends Kohana_Unittest_TestCase
 			array(
 				array(
 					'message' => array(
-							'text' => '',
-							'valid' => TRUE,
-						),
-						'levels' => array(),
-						'date-from' => date('Y-m-d', time()),
-						'date-to' => date('Y-m-d', time()),
-						'limit' => 40,
-						'query_string' => '',
+						'text' => '',
+						'valid' => TRUE,
+					),
+					'levels' => array(),
+					'date-from' => date('Y-m-d 00:00:00', time()),
+					'date-to' => date('Y-m-d H:i:s', strtotime(date('Y-m-d 00:00:00', time()) . ' +1 day')),
+					'limit' => 40,
+					'query_string' => '',
 				),
 				NULL, array(), NULL, NULL, 0
 			),
 			array(
 				array(
 					'message' => array(
-							'text' => 'search text',
-							'valid' => TRUE,
-						),
-						'levels' => array('DEBUG'),
-						'date-from' => '2014-09-02',
-						'date-to' => '2014-09-03',
-						'limit' => 50,
-						'query_string' => 'limit=50&message=search text&levels[]=DEBUG&date-from=2014-09-02&date-to=2014-09-03',
+						'text' => 'search text',
+						'valid' => TRUE,
+					),
+					'levels' => array('DEBUG'),
+					'date-from' => '2014-09-02 00:00:00',
+					'date-to' => '2014-09-03 00:00:00',
+					'limit' => 50,
+					'query_string' => 'limit=50&message=search text&levels[]=DEBUG&date-from=2014-09-02 00:00:00&date-to=2014-09-03 00:00:00',
 				),
 				'search text', array('DEBUG'), '2014-09-03', '2014-09-02', 50
 			),
 			array(
 				array(
 					'message' => array(
-							'text' => 'bad / search text',
-							'valid' => FALSE,
-						),
-						'levels' => array('DEBUG'),
-						'date-from' => date('Y-m-d', time()),
-						'date-to' => date('Y-m-d', time()),
-						'limit' => 50,
-						'query_string' => 'limit=50&message=bad / search text&levels[]=DEBUG',
+						'text' => 'bad / search text',
+						'valid' => FALSE,
+					),
+					'levels' => array('DEBUG'),
+					'date-from' => date('Y-m-d 00:00:00', time()),
+					'date-to' => date('Y-m-d H:i:s', strtotime(date('Y-m-d 00:00:00', time()) . ' +1 day')),
+					'limit' => 50,
+					'query_string' => 'limit=50&message=bad / search text&levels[]=DEBUG',
 				),
 				'bad / search text', array('DEBUG', 'BADLEVEL'), 'baddate', 'baddate', 50
 			),
 			array(
 				array(
 					'message' => array(
-							'text' => 'search text',
-							'valid' => TRUE,
-						),
-						'levels' => array('DEBUG'),
-						'date-from' => '2014-09-02',
-						'date-to' => date('Y-m-d', time()),
-						'limit' => 50,
-						'query_string' => 'limit=50&message=search text&levels[]=DEBUG&date-from=2014-09-02',
+						'text' => 'search text',
+						'valid' => TRUE,
+					),
+					'levels' => array('DEBUG'),
+					'date-from' => '2014-09-02 00:00:00',
+					'date-to' => date('Y-m-d H:i:s', strtotime(date('Y-m-d 00:00:00', time()) . ' +1 day')),
+					'limit' => 50,
+					'query_string' => 'limit=50&message=search text&levels[]=DEBUG&date-from=2014-09-02 00:00:00',
 				),
 				'search text', array('DEBUG'), '2014-09-02', NULL, 50
 			),
 			array(
 				array(
 					'message' => array(
-							'text' => 'search text',
-							'valid' => TRUE,
-						),
-						'levels' => array('DEBUG'),
-						'date-from' => '1970-01-01',
-						'date-to' => '2014-09-02',
-						'limit' => 50,
-						'query_string' => 'limit=50&message=search text&levels[]=DEBUG&date-to=2014-09-02',
+						'text' => 'search text',
+						'valid' => TRUE,
+					),
+					'levels' => array('DEBUG'),
+					'date-from' => '1980-01-01 00:00:00',
+					'date-to' => '2014-09-02 00:00:00',
+					'limit' => 50,
+					'query_string' => 'limit=50&message=search text&levels[]=DEBUG&date-to=2014-09-02 00:00:00',
 				),
 				'search text', array('DEBUG'), NULL, '2014-09-02', 50
 			),
@@ -192,9 +211,16 @@ class Kohana_LogReaderTest extends Kohana_Unittest_TestCase
 	 */
 	public function test_create_filters($expected, $message, array $levels, $date_from, $date_to, $limit)
 	{
+		$this->config
+			->expects($this->any())
+			->method('get_message_limit')
+			->will($this->returnValue(40));
+		
+		$result = $this->logreader->create_filters($message, $levels, $date_from, $date_to, $limit);
+		
 		$this->assertSame(
 			$expected,
-			$this->logreader->create_filters($message, $levels, $date_from, $date_to, $limit)
+			$result
 		);
 	}
 	

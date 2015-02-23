@@ -20,11 +20,17 @@
 								<div class="form-group">
 									<label for="input-date-from" class="col-lg-1 control-label">Date from</label>
 									<div class="col-lg-2">
-										<input type="text" class="form-control" id="input-date-from" name="date-from" placeholder="Date from" value="<?php print $filters['date-from']; ?>" />
+										<div class="input-group date">
+											<input type="text" class="form-control" id="input-date-from" name="date-from" placeholder="Date from" value="<?php print $filters['date-from']; ?>" />
+											<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+										</div>
 									</div>
 									<label for="input-date-to" class="col-lg-1 control-label">Date to</label>
 									<div class="col-lg-2">
-										<input type="text" class="form-control" id="input-date-to" name="date-to" placeholder="Date to" value="<?php print $filters['date-to']; ?>" />
+										<div class="input-group date">
+											<input type="text" class="form-control" id="input-date-to" name="date-to" placeholder="Date to" value="<?php print $filters['date-to']; ?>" />
+											<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+										</div>
 									</div>
 								</div>
 								<div class="form-group">

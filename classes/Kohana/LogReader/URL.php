@@ -15,7 +15,7 @@ class Kohana_LogReader_URL
 	/**
 	 * LogReader configuration.
 	 * 
-	 * @var  LogReader_Config
+	 * @var  $config  LogReader_Config
 	 */
 	protected static $config;
 	
@@ -37,7 +37,7 @@ class Kohana_LogReader_URL
 	 */
 	public static function base()
 	{
-		return URL::base(Request::current()) . Route::get('logreader')->uri() . '/';
+		return URL::base(Request::current()) . static::$config->get_route() . '/';
 	}
 	
 	/**
@@ -48,7 +48,7 @@ class Kohana_LogReader_URL
 	 */
 	public static function api_base()
 	{
-		return URL::base(Request::current()) . Route::get('logreader/api')->uri() . '/';
+		return URL::base(Request::current()) . static::$config->get_route() . '/api/';
 	}
 	
 	/**
@@ -65,7 +65,7 @@ class Kohana_LogReader_URL
 		}
 		else
 		{
-			return URL::base(Request::current()) . Route::get('logreader/media')->uri() . '/';
+			return URL::base(Request::current()) . static::$config->get_static_route() . '/';
 		}
 	}
 	
@@ -77,7 +77,7 @@ class Kohana_LogReader_URL
 	 */
 	public static function log_message($message_id)
 	{
-		return URL::base(Request::current()) . Route::get('logreader/message')->uri(array('message' => $message_id));
+		return URL::base(Request::current()) . static::$config->get_route() . '/message/' . $message_id;
 	}
 
 	/**
@@ -119,9 +119,9 @@ class Kohana_LogReader_URL
 	/**
 	 * Returns page url from the template.
 	 * 
-	 * @param   integer  $page       Page number
-	 * @param   string   $url        Url template
-	 * @param   string   $first_url  First page url template (if it is different)
+	 * @param   int     $page       Page number
+	 * @param   string  $url        Url template
+	 * @param   string  $first_url  First page url template (if it is different)
 	 * @return  string
 	 * @uses    LogReader_URL::str_template()
 	 */
@@ -133,10 +133,10 @@ class Kohana_LogReader_URL
 	/**
 	 * Returns urls and titles to the pager in the View.
 	 * 
-	 * @param   integer  $current_original  Current page number
-	 * @param   integer  $total             Number of pages
-	 * @param   string   $url               Url template
-	 * @param   string   $first_url         First page url template (if it is different)
+	 * @param   int     $current_original  Current page number
+	 * @param   int     $total             Number of pages
+	 * @param   string  $url               Url template
+	 * @param   string  $first_url         First page url template (if it is different)
 	 * @return  array
 	 * @uses    LogReader_URL::page_url()
 	 */

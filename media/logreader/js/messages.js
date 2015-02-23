@@ -28,10 +28,9 @@ var mobileView = false;
 
 $("#message-tooltip").tooltip({ placement: 'bottom'});
 
-$('#input-date-from, #input-date-to')
-	.datepicker({ format: 'yyyy-mm-dd' })
-	.on('changeDate', function(e) {
-		$(this).datepicker('hide');
+$('#input-date-from, #input-date-to').parent()
+	.datetimepicker({
+		format: 'YYYY-MM-DD HH:mm:ss'
 	});
 
 var selectedMessage;

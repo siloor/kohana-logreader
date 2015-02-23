@@ -15,14 +15,14 @@ class Kohana_LogReader
 	/**
 	 * LogReader config
 	 * 
-	 * @var  array
+	 * @var  $config  array
 	 */
 	protected $config;
 
 	/**
 	 * LogReader store
 	 * 
-	 * @var  LogReader_Store
+	 * @var  $store  LogReader_Store
 	 */
 	protected $store;
 
@@ -38,7 +38,7 @@ class Kohana_LogReader
 	/**
 	 * Log message levels
 	 * 
-	 * @var  array
+	 * @var  $levels  array
 	 */
 	protected $levels = array(
 			self::LEVEL_WARNING,
@@ -53,7 +53,7 @@ class Kohana_LogReader
 	/**
 	 * Log message styles
 	 * 
-	 * @var  array
+	 * @var  $styles  array
 	 */
 	protected $styles = array(
 			self::LEVEL_WARNING   => 'warning',
@@ -184,18 +184,18 @@ class Kohana_LogReader
 		// If date-from and date-to are not given use current date
 		if ($filters['date-from'] === FALSE && $filters['date-to'] === FALSE)
 		{
-			$filters['date-from'] = time();
-			$filters['date-to'] = time();
+			$filters['date-from'] = strtotime(date('Y-m-d', time()));
+			$filters['date-to'] = strtotime(date('Y-m-d', time()) . ' +1 day');
 		}
-		// If date-from is not given use 1900.01.01.
+		// If date-from is not given use 1980.01.01.
 		else if ($filters['date-from'] === FALSE)
 		{
-			$filters['date-from'] = strtotime('1900-01-01');
+			$filters['date-from'] = strtotime('1980-01-01');
 		}
 		// If date-to is not given use current date
 		else if ($filters['date-to'] === FALSE)
 		{
-			$filters['date-to'] = time();
+			$filters['date-to'] = strtotime(date('Y-m-d', time()) . ' +1 day');
 		}
 
 		// If date-from is greater than date-to change their values
@@ -210,8 +210,8 @@ class Kohana_LogReader
 			unset($date_dummy);
 		}
 
-		$filters['date-from'] = date('Y-m-d', $filters['date-from']);
-		$filters['date-to'] = date('Y-m-d', $filters['date-to']);
+		$filters['date-from'] = date('Y-m-d H:i:s', $filters['date-from']);
+		$filters['date-to'] = date('Y-m-d H:i:s', $filters['date-to']);
 
 		if ($use_in_qs['date-from'])
 		{
@@ -263,7 +263,7 @@ class Kohana_LogReader
 	 * @param   string  $from_id    Newer messages from specific id
 	 * @return  array   Limited matched messages and the count of matched log messages
 	 */
-	public function get_messages($date_from = FALSE, $date_to = FALSE, $limit = 10, $offset = 0, $search = NULL, array $levels = array(), array $ids = array(), $from_id = NULL)
+	public function get_messages($date_from = NULL, $date_to = NULL, $limit = 10, $offset = 0, $search = NULL, array $levels = array(), array $ids = array(), $from_id = NULL)
 	{
 		$messages = $this->store->get_messages($date_from, $date_to, $limit, $offset, $search, $levels, $ids, $from_id);
 		

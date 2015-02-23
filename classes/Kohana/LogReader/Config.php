@@ -15,7 +15,7 @@ class Kohana_LogReader_Config
 	/**
 	 * LogReader config parameters
 	 * 
-	 * @var  array
+	 * @var  $config  array
 	 */
 	protected $config;
 	

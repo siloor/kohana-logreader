@@ -10,7 +10,7 @@
 		<title><?php print ucfirst($content->name); ?> - Kohana LogReader</title>
 		<link href="<?php print LogReader_URL::static_base(); ?>bootstrap/css/bootstrap.min.css" rel="stylesheet" />
 		<link href="<?php print LogReader_URL::static_base(); ?>bootstrap/css/bootstrap-theme.min.css" rel="stylesheet" />
-		<link href="<?php print LogReader_URL::static_base(); ?>bootstrap/css/datepicker.css" rel="stylesheet" />
+		<link href="<?php print LogReader_URL::static_base(); ?>bootstrap/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
 		<!--[if lt IE 9]>
 		<script src="<?php print LogReader_URL::static_base(); ?>bootstrap/js/html5shiv.js"></script>
 		<script src="<?php print LogReader_URL::static_base(); ?>bootstrap/js/respond.min.js"></script>
@@ -58,8 +58,9 @@
 		</div>
 		<script src="<?php print LogReader_URL::static_base(); ?>js/underscore-min.js"></script>
 		<script src="<?php print LogReader_URL::static_base(); ?>js/jquery-1.11.1.min.js"></script>
+		<script src="<?php print LogReader_URL::static_base(); ?>js/moment.min.js"></script>
 		<script src="<?php print LogReader_URL::static_base(); ?>bootstrap/js/bootstrap.min.js"></script>
-		<script src="<?php print LogReader_URL::static_base(); ?>bootstrap/js/bootstrap-datepicker.js"></script>
+		<script src="<?php print LogReader_URL::static_base(); ?>bootstrap/js/bootstrap-datetimepicker.min.js"></script>
 		<?php if (isset($javascripts) && $javascripts): foreach ($javascripts as $javascript): ?>
 		<script src="<?php print $javascript; ?>"></script>
 		<?php endforeach; endif; ?>

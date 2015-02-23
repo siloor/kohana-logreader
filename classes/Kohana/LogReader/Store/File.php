@@ -13,9 +13,9 @@
 class Kohana_LogReader_Store_File extends LogReader_Store
 {
 	/**
-	 * Returns the log message by Id
+	 * Returns the log message by Id.
 	 * 
-	 * @param   string  $message_id  Id of the log message
+	 * @param   string  $message_id  Id of the log message.
 	 * @return  array
 	 */
 	public function get_message($message_id)
@@ -24,28 +24,40 @@ class Kohana_LogReader_Store_File extends LogReader_Store
 
 		if (!$message) return NULL;
 
-		$message = $this->get_messages($message['date'], $message['date'], 1, 0, NULL, array(), array($this->encode_message_id($message['date'], $message['line_number'])));
+		$message = $this->get_messages($message['date'], date('Y-m-d', strtotime($message['date'] . ' +1 day')), 1, 0, NULL, array(), array($this->encode_message_id($message['date'], $message['line_number'])));
 
 		return $message['messages'] ? $message['messages'][0] : NULL;
 	}
 
 	/**
-	 * Returns log messages
+	 * Returns log messages.
 	 * 
-	 * @param   string  $date_from  Start date of log messages (if not given, it starts with the first log)
-	 * @param   string  $date_to    End date of log messages (if not given, it ends with the last log)
-	 * @param   int     $limit      Limit
-	 * @param   int     $offset     Offset
-	 * @param   string  $search     The message filter
-	 * @param   array   $levels     The levels filter
-	 * @param   array   $ids        The ids filter
-	 * @param   string  $from_id    Newer messages from specific id
-	 * @return  array   Limited matched messages and the count of matched log messages
+	 * @param   string  $date_from  Start date of log messages (if not given, it starts with the first log).
+	 * @param   string  $date_to    End date of log messages (if not given, it ends with the last log).
+	 * @param   int     $limit      Limit.
+	 * @param   int     $offset     Offset.
+	 * @param   string  $search     The message filter.
+	 * @param   array   $levels     The levels filter.
+	 * @param   array   $ids        The ids filter.
+	 * @param   string  $from_id    Newer messages from specific id.
+	 * @return  array   Limited matched messages and the count of matched log messages.
 	 */
-	public function get_messages($date_from = FALSE, $date_to = FALSE, $limit = 10, $offset = 0, $search = NULL, array $levels = array(), array $ids = array(), $from_id = NULL)
+	public function get_messages($date_from = NULL, $date_to = NULL, $limit = 10, $offset = 0, $search = NULL, array $levels = array(), array $ids = array(), $from_id = NULL)
 	{
+		$result = array('all_matches' => 0, 'messages' => array());
+		
 		$date_from = strtotime($date_from);
 		$date_to = strtotime($date_to);
+		
+		if ($date_from === FALSE)
+		{
+			$date_from = NULL;
+		}
+		
+		if ($date_to === FALSE)
+		{
+			$date_to = NULL;
+		}
 
 		if ($from_id)
 		{
@@ -53,49 +65,59 @@ class Kohana_LogReader_Store_File extends LogReader_Store
 
 			$from_id_date = strtotime($from_id_date['date']);
 
-			if ($date_from < $from_id_date)
+			if ($date_from && $date_from < $from_id_date)
 			{
 				$date_from = $from_id_date;
 			}
 
-			if ($date_to < $from_id_date)
+			if ($date_to && $date_to < $from_id_date)
 			{
-				$date_to = $from_id_date;
+				return $result;
 			}
 		}
 		
-		function list_files($dir)
-		{
-			$files = array();
-			
-			if ($handle = opendir($dir))
-			{
-				while (($entry = readdir($handle)) !== FALSE)
-				{
-					if ($entry !== '.' && $entry !== '..')
-					{
-						if (is_dir($dir . '/' . $entry))
-						{
-							$files[$entry] = list_files($dir . '/' . $entry);
-						}
-						else
-						{
-							array_push($files, $entry);
-						}
-					}
-				}
-				
-				closedir($handle);
+		$daily_logs = $this->get_log_files($date_from, $date_to);
 
-				unset($handle, $entry);
-			}
+		foreach ($daily_logs as $daily_log)
+		{
+			$new_limit = $limit - count($result['messages']);
+
+			$new_offset = $offset - $result['all_matches'];
 			
-			return $files;
+			if ($new_offset < 0)
+			{
+				$new_offset = 0;
+			}
+
+			$daily_messages = $this->get_daily_messages($daily_log['date'], $date_from, $date_to, $new_limit, $new_offset, $search, $levels, $ids, $from_id);
+			
+			$result['all_matches'] += $daily_messages['all_matches'];
+			
+			$result['messages'] = array_merge($result['messages'], $daily_messages['messages']);
+
+			unset($daily_messages, $new_offset, $new_limit);
 		}
+
+		unset($daily_log);
 		
-		$files = list_files(realpath($this->config['path']) . DIRECTORY_SEPARATOR);
+		return $result;
+	}
+	
+	/**
+	 * Returns available log files.
+	 * 
+	 * @param   int  $date_from  Start date of log messages (if not given, it starts with the first log).
+	 * @param   int  $date_to    End date of log messages (if not given, it ends with the last log).
+	 * @return  array
+	 */
+	protected function get_log_files($date_from = NULL, $date_to = NULL)
+	{
+		$day_from = $date_from ? strtotime(date('Y-m-d', $date_from)) : NULL;
+		$day_to = $date_to ? strtotime(date('Y-m-d', $date_to)) : NULL;
 		
 		$logs = array();
+		
+		$files = $this->list_files(realpath($this->config['path']) . DIRECTORY_SEPARATOR);
 		
 		foreach ($files as $year_name => $year)
 		{
@@ -111,7 +133,7 @@ class Kohana_LogReader_Store_File extends LogReader_Store
 							{
 								$date = strtotime(((int) $year_name) . '-' . ((int) $month_name) . '-' . ((int) $day));
 
-								if (($date_from && $date < $date_from) || ($date_to && $date > $date_to))
+								if (($day_from && $date < $day_from) || ($day_to && $date > $day_to))
 								{
 									continue;
 								}
@@ -120,7 +142,7 @@ class Kohana_LogReader_Store_File extends LogReader_Store
 									'year' => (int) $year_name,
 									'month' => (int) $month_name,
 									'day' => (int) $day,
-									'date' => date('Y-m-d', $date)
+									'date' => date('Y-m-d', $date),
 								));
 							}
 						}
@@ -135,72 +157,38 @@ class Kohana_LogReader_Store_File extends LogReader_Store
 
 		unset($year_name, $year);
 		
-		function sort_logs($a, $b)
-		{
-			if ($a['year'] === $b['year'])
-			{
-				if ($a['month'] === $b['month'])
-				{
-					if ($a['day'] === $b['day']) return 0;
-					
-					return ($a['day'] < $b['day']) ? 1 : -1;
-				}
-				
-				return ($a['month'] < $b['month']) ? 1 : -1;
-			}
-			
-			return ($a['year'] < $b['year']) ? 1 : -1;
-		}
+		usort($logs, array('LogReader_Store_File', 'sort_logs'));
 		
-		usort($logs, 'sort_logs');
-		
-		$result = array('all_matches' => 0, 'messages' => array());
-
-		foreach ($logs as $log)
-		{
-			$new_limit = $limit - count($result['messages']);
-
-			if ($new_limit < 0)
-			{
-				$new_limit = 0;
-			}
-
-			$new_offset = $offset - $result['all_matches'];
-			
-			if ($new_offset < 0)
-			{
-				$new_offset = 0;
-			}
-
-			$daily_messages = $this->get_daily_messages($log['date'], $new_limit, $new_offset, $search, $levels, $ids, $from_id);
-			
-			$result['all_matches'] += $daily_messages['all_matches'];
-			
-			$result['messages'] = array_merge($result['messages'], $daily_messages['messages']);
-
-			unset($daily_messages, $new_offset, $new_limit);
-		}
-
-		unset($log);
-		
-		return $result;
+		return $logs;
 	}
 
 	/**
-	 * Returns daily log messages
+	 * Returns daily log messages.
 	 * 
-	 * @param   string  $date     Date of log messages
-	 * @param   int     $limit    Limit
-	 * @param   int     $offset   Offset
-	 * @param   string  $search   The message filter
-	 * @param   array   $levels   The levels filter
-	 * @param   array   $ids      The ids filter
-	 * @param   string  $from_id  Newer messages from specific id
-	 * @return  array   Limited matched messages and the count of matched log messages
+	 * @param   string  $date       Date of log messages.
+	 * @param   int     $date_from  Start date of log messages (if not given, it starts with the first log).
+	 * @param   int     $date_to    End date of log messages (if not given, it ends with the last log).
+	 * @param   int     $limit      Limit.
+	 * @param   int     $offset     Offset.
+	 * @param   string  $search     The message filter.
+	 * @param   array   $levels     The levels filter.
+	 * @param   array   $ids        The ids filter.
+	 * @param   string  $from_id    Newer messages from specific id.
+	 * @return  array   Limited matched messages and the count of matched log messages.
 	 */
-	protected function get_daily_messages($date, $limit = 10, $offset = 0, $search = NULL, array $levels = array(), array $ids = array(), $from_id = NULL)
+	protected function get_daily_messages($date, $date_from = NULL, $date_to = NULL, $limit = 10, $offset = 0, $search = NULL, array $levels = array(), array $ids = array(), $from_id = NULL)
 	{
 		$result = array('all_matches' => 0, 'messages' => array());
+		
+		if ($date_from && $date_from <= strtotime($date))
+		{
+			$date_from = NULL;
+		}
+		
+		if ($date_to && $date_to >= strtotime($date . ' +1 day'))
+		{
+			$date_to = NULL;
+		}
 		
 		$file = $this->log_file_path($date);
 		
@@ -220,7 +208,7 @@ class Kohana_LogReader_Store_File extends LogReader_Store
 
 				$line = trim($line);
 
-				if ($this->is_message_line($line) && $this->check_filters($this->encode_message_id($date, $cursor), $line, $search, $levels, $ids, $from_id))
+				if ($this->is_message_line($line) && $this->check_filters($this->encode_message_id($date, $cursor), $line, $date_from, $date_to, $search, $levels, $ids, $from_id))
 				{
 					$result['all_matches']++;
 					
@@ -331,9 +319,9 @@ class Kohana_LogReader_Store_File extends LogReader_Store
 	}
 	
 	/**
-	 * Returns path to the daily log file
+	 * Returns path to the daily log file.
 	 * 
-	 * @param   string  $date  Date of log messages
+	 * @param   string  $date  Date of log messages.
 	 * @return  string
 	 */
 	protected function log_file_path($date)
@@ -346,9 +334,9 @@ class Kohana_LogReader_Store_File extends LogReader_Store
 	}
 	
 	/**
-	 * Returns true if the given line is a log message, false otherwise
+	 * Returns true if the given line is a log message, false otherwise.
 	 * 
-	 * @param   string  $line  Line of text
+	 * @param   string  $line  Line of text.
 	 * @return  boolean
 	 */
 	protected function is_message_line($line)
@@ -357,9 +345,9 @@ class Kohana_LogReader_Store_File extends LogReader_Store
 	}
 	
 	/**
-	 * Returns true if the given line is a log message trace, false otherwise
+	 * Returns true if the given line is a log message trace, false otherwise.
 	 * 
-	 * @param   string  $line  Line of text
+	 * @param   string  $line  Line of text.
 	 * @return  boolean
 	 */
 	protected function is_trace_line($line)
@@ -368,10 +356,10 @@ class Kohana_LogReader_Store_File extends LogReader_Store
 	}
 	
 	/**
-	 * Create message id from date and line number
+	 * Create message id from date and line number.
 	 * 
-	 * @param   string  $date         Date of the message
-	 * @param   int     $line_number  Line number of the message
+	 * @param   string  $date         Date of the message.
+	 * @param   int     $line_number  Line number of the message.
 	 * @return  string
 	 */
 	protected function encode_message_id($date, $line_number)
@@ -386,9 +374,9 @@ class Kohana_LogReader_Store_File extends LogReader_Store
 	}
 	
 	/**
-	 * Decode message id to date and line_number
+	 * Decode message id to date and line_number.
 	 * 
-	 * @param   string  $message  Id of the message
+	 * @param   string  $message  Id of the message.
 	 * @return  array
 	 */
 	protected function decode_message_id($message)
@@ -409,18 +397,33 @@ class Kohana_LogReader_Store_File extends LogReader_Store
 	}
 	
 	/**
-	 * Returns true if the message matched the filters
+	 * Returns true if the message matched the filters.
 	 * 
-	 * @param   string  $id       Log message id
-	 * @param   string  $message  Log message
-	 * @param   string  $search   The message filter
-	 * @param   array   $levels   The levels filter
-	 * @param   array   $ids      The ids filter
-	 * @param   string  $from_id  Newer messages from specific id
+	 * @param   string  $id         Log message id.
+	 * @param   string  $message    Log message.
+	 * @param   int     $date_from  Start date of log messages (if not given, it starts with the first log).
+	 * @param   int     $date_to    End date of log messages (if not given, it ends with the last log).
+	 * @param   string  $search     The message filter.
+	 * @param   array   $levels     The levels filter.
+	 * @param   array   $ids        The ids filter.
+	 * @param   string  $from_id    Newer messages from specific id.
 	 * @return  boolean
 	 */
-	protected function check_filters($id, $message, $search, array $levels, array $ids, $from_id)
+	protected function check_filters($id, $message, $date_from = NULL, $date_to = NULL, $search, array $levels, array $ids, $from_id)
 	{
+		if ($date_from || $date_to)
+		{
+			if (!preg_match("/(.*) ---/", $message, $matches) || !isset($matches[1])) return FALSE;
+			
+			$date = strtotime($matches[1]);
+			
+			unset($matches);
+			
+			if ($date_from && $date < $date_from) return FALSE;
+			
+			if ($date_to && $date > $date_to) return FALSE;
+		}
+		
 		if ($levels)
 		{
 			$level_found = FALSE;
@@ -466,13 +469,69 @@ class Kohana_LogReader_Store_File extends LogReader_Store
 
 		if ($search)
 		{
-			if (!preg_match('/' . $search . '/i', $message))
-			{
-				return FALSE;
-			}
+			if (!preg_match('/' . $search . '/i', $message)) return FALSE;
 		}
 
 		return TRUE;
+	}
+	
+	/**
+	 * Returns the list of files and directories in a folder.
+	 * 
+	 * @param   string  $dir  The path to the root directory.
+	 * @return  array
+	 */
+	protected function list_files($dir)
+	{
+		$files = array();
+		
+		if ($handle = opendir($dir))
+		{
+			while (($entry = readdir($handle)) !== FALSE)
+			{
+				if ($entry !== '.' && $entry !== '..')
+				{
+					if (is_dir($dir . '/' . $entry))
+					{
+						$files[$entry] = $this->list_files($dir . '/' . $entry);
+					}
+					else
+					{
+						array_push($files, $entry);
+					}
+				}
+			}
+			
+			closedir($handle);
+
+			unset($handle, $entry);
+		}
+		
+		return $files;
+	}
+	
+	/**
+	 * Sorts log files.
+	 * 
+	 * @param   array  $a  The first log file.
+	 * @param   array  $b  The second log file.
+	 * @return  int
+	 */
+	protected static function sort_logs($a, $b)
+	{
+		if ($a['year'] === $b['year'])
+		{
+			if ($a['month'] === $b['month'])
+			{
+				if ($a['day'] === $b['day']) return 0;
+				
+				return ($a['day'] < $b['day']) ? 1 : -1;
+			}
+			
+			return ($a['month'] < $b['month']) ? 1 : -1;
+		}
+		
+		return ($a['year'] < $b['year']) ? 1 : -1;
 	}
 	
 }

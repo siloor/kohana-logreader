@@ -15,7 +15,7 @@ abstract class Kohana_LogReader_Store
 	/**
 	 * LogReader_Store config
 	 * 
-	 * @var  array
+	 * @var  $config  array
 	 */
 	protected $config;
 	
@@ -50,6 +50,6 @@ abstract class Kohana_LogReader_Store
 	 * @param   string  $from_id    Newer messages from specific id
 	 * @return  array   Limited matched messages and the count of matched log messages
 	 */
-	abstract public function get_messages($date_from = FALSE, $date_to = FALSE, $limit = 10, $offset = 0, $search = NULL, array $levels = array(), array $ids = array(), $from_id = NULL);
+	abstract public function get_messages($date_from = NULL, $date_to = NULL, $limit = 10, $offset = 0, $search = NULL, array $levels = array(), array $ids = array(), $from_id = NULL);
 	
 }

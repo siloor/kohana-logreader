@@ -15,21 +15,21 @@ class Kohana_LogReader_Controller extends Kohana_Controller
 	/**
 	 * Autheticated user object.
 	 * 
-	 * @var  array
+	 * @var  $user  array
 	 */
 	protected $user = NULL;
 	
 	/**
 	 * LogReader object.
 	 * 
-	 * @var  LogReader
+	 * @var  $logreader  LogReader
 	 */
 	protected $logreader;
 	
 	/**
 	 * LogReader config object.
 	 * 
-	 * @var  LogReader_Config
+	 * @var  $logreader_config  LogReader_Config
 	 */
 	protected $logreader_config;
 	
