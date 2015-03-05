@@ -1,6 +1,6 @@
 # Kohana LogReader
 
-## A Kohana 3.x module for exploring log files
+## A Kohana 3.x module for searching log files
 
 ### GITHUB
 
