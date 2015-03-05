@@ -13,20 +13,20 @@
 								<legend>Messages</legend>
 								<div class="form-group">
 									<label for="input-message" class="col-lg-1 control-label">Message<span class="glyphicon glyphicon-info-sign" id="message-tooltip" title="Regular expression"></span></label>
-									<div class="col-lg-6">
+									<div class="col-lg-7">
 										<input type="text" class="form-control <?php if (!$filters['message']['valid']) print 'error'; ?>" id="input-message" name="message" placeholder="Message" value="<?php print $filters['message']['text'] ?>" />
 									</div>
 								</div>
 								<div class="form-group">
 									<label for="input-date-from" class="col-lg-1 control-label">Date from</label>
-									<div class="col-lg-2">
+									<div class="col-lg-3">
 										<div class="input-group date">
 											<input type="text" class="form-control" id="input-date-from" name="date-from" placeholder="Date from" value="<?php print $filters['date-from']; ?>" />
 											<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
 										</div>
 									</div>
 									<label for="input-date-to" class="col-lg-1 control-label">Date to</label>
-									<div class="col-lg-2">
+									<div class="col-lg-3">
 										<div class="input-group date">
 											<input type="text" class="form-control" id="input-date-to" name="date-to" placeholder="Date to" value="<?php print $filters['date-to']; ?>" />
 											<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
