@@ -19,7 +19,7 @@ http://siloor.com/logreader/demo/?message=&date-from=2014-01-01
 3. Go to `http://your-app-root/logreader`
 4. You are done! 
 
-![Kohana LogReader interface](http://siloor.com/logreader/logreader.png "Kohana LogReader interface")
+![Kohana LogReader interface](http://siloor.com/logreader/logreader.v1.png "Kohana LogReader interface")
 
 ### How to use?
 
