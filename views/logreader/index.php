@@ -8,11 +8,10 @@
 		<meta name="author" content="" />
 		<link rel="shortcut icon" href="<?php print LogReader_URL::static_base(); ?>ico/favicon.ico" />
 		<title><?php print ucfirst($content->name); ?> - Kohana LogReader</title>
-		<link href="<?php print LogReader_URL::static_base(); ?>bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-		<link href="<?php print LogReader_URL::static_base(); ?>bootstrap/css/bootstrap-theme.min.css" rel="stylesheet" />
+		<link href="<?php print LogReader_URL::static_base(); ?>bootstrap/css/bootswatch.paper.min.css" rel="stylesheet" />
 		<link href="<?php print LogReader_URL::static_base(); ?>bootstrap/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
 		<!--[if lt IE 9]>
-		<script src="<?php print LogReader_URL::static_base(); ?>bootstrap/js/html5shiv.js"></script>
+		<script src="<?php print LogReader_URL::static_base(); ?>bootstrap/js/html5shiv.min.js"></script>
 		<script src="<?php print LogReader_URL::static_base(); ?>bootstrap/js/respond.min.js"></script>
 		<![endif]-->
 		<link href="<?php print LogReader_URL::static_base(); ?>css/logreader.css" rel="stylesheet" />
