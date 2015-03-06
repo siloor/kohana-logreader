@@ -141,7 +141,7 @@ class Kohana_LogReader
 		
 		if ($use_in_qs['limit'])
 		{
-			$filters['query_string'] .= '&limit=' . $filters['limit'];
+			$filters['query_string'] .= '&limit=' . urlencode($filters['limit']);
 		}
 
 		// Validate message filter
@@ -156,7 +156,7 @@ class Kohana_LogReader
 		
 		if ($use_in_qs['message'])
 		{
-			$filters['query_string'] .= '&message=' . $filters['message']['text'];
+			$filters['query_string'] .= '&message=' . urlencode($filters['message']['text']);
 		}
 
 		// Validate levels filter
@@ -168,7 +168,7 @@ class Kohana_LogReader
 			}
 			else
 			{
-				$filters['query_string'] .= '&levels[]=' . $level;
+				$filters['query_string'] .= '&levels[]=' . urlencode($level);
 			}
 		}
 		
@@ -215,12 +215,12 @@ class Kohana_LogReader
 
 		if ($use_in_qs['date-from'])
 		{
-			$filters['query_string'] .= '&date-from=' . $filters['date-from'];
+			$filters['query_string'] .= '&date-from=' . urlencode($filters['date-from']);
 		}
 		
 		if ($use_in_qs['date-to'])
 		{
-			$filters['query_string'] .= '&date-to=' . $filters['date-to'];
+			$filters['query_string'] .= '&date-to=' . urlencode($filters['date-to']);
 		}
 		
 		$filters['query_string'] = substr($filters['query_string'], 1);

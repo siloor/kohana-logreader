@@ -147,7 +147,7 @@ class Kohana_LogReaderTest extends Kohana_Unittest_TestCase
 					'date-from' => '2014-09-02 00:00:00',
 					'date-to' => '2014-09-03 00:00:00',
 					'limit' => 50,
-					'query_string' => 'limit=50&message=search text&levels[]=DEBUG&date-from=2014-09-02 00:00:00&date-to=2014-09-03 00:00:00',
+					'query_string' => 'limit=50&message=search+text&levels[]=DEBUG&date-from=2014-09-02+00%3A00%3A00&date-to=2014-09-03+00%3A00%3A00',
 				),
 				'search text', array('DEBUG'), '2014-09-03', '2014-09-02', 50
 			),
@@ -161,7 +161,7 @@ class Kohana_LogReaderTest extends Kohana_Unittest_TestCase
 					'date-from' => date('Y-m-d 00:00:00', time()),
 					'date-to' => date('Y-m-d H:i:s', strtotime(date('Y-m-d 00:00:00', time()) . ' +1 day')),
 					'limit' => 50,
-					'query_string' => 'limit=50&message=bad / search text&levels[]=DEBUG',
+					'query_string' => 'limit=50&message=bad+%2F+search+text&levels[]=DEBUG',
 				),
 				'bad / search text', array('DEBUG', 'BADLEVEL'), 'baddate', 'baddate', 50
 			),
@@ -175,7 +175,7 @@ class Kohana_LogReaderTest extends Kohana_Unittest_TestCase
 					'date-from' => '2014-09-02 00:00:00',
 					'date-to' => date('Y-m-d H:i:s', strtotime(date('Y-m-d 00:00:00', time()) . ' +1 day')),
 					'limit' => 50,
-					'query_string' => 'limit=50&message=search text&levels[]=DEBUG&date-from=2014-09-02 00:00:00',
+					'query_string' => 'limit=50&message=search+text&levels[]=DEBUG&date-from=2014-09-02+00%3A00%3A00',
 				),
 				'search text', array('DEBUG'), '2014-09-02', NULL, 50
 			),
@@ -189,7 +189,7 @@ class Kohana_LogReaderTest extends Kohana_Unittest_TestCase
 					'date-from' => '1980-01-01 00:00:00',
 					'date-to' => '2014-09-02 00:00:00',
 					'limit' => 50,
-					'query_string' => 'limit=50&message=search text&levels[]=DEBUG&date-to=2014-09-02 00:00:00',
+					'query_string' => 'limit=50&message=search+text&levels[]=DEBUG&date-to=2014-09-02+00%3A00%3A00',
 				),
 				'search text', array('DEBUG'), NULL, '2014-09-02', 50
 			),
