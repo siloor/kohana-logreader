@@ -37,7 +37,7 @@ class Kohana_LogReader_Controller extends Kohana_Controller
 	{
 		parent::before();
 		
-		$this->logreader_config = new LogReader_Config(Kohana::$config->load('logreader')->as_array());
+		$this->logreader_config = new LogReader_Config(Kohana::$config->load('kohana-logreader')->as_array());
 		
 		$store = $this->logreader_config->get_store();
 		

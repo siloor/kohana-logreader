@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-$logreader_config = new LogReader_Config(Kohana::$config->load('logreader')->as_array());
+$logreader_config = new LogReader_Config(Kohana::$config->load('kohana-logreader')->as_array());
 
 LogReader_URL::set_configuration($logreader_config);
 
