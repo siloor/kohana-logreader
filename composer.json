@@ -7,22 +7,22 @@
 	"keywords":    ["kohana", "log", "log files", "search", "viewer", "reader"],
 	"authors": [
 		{
-			"name":     "Milan Magyar",
-			"role":     "developer"
+			"name": "Milan Magyar",
+			"role": "developer"
 		}
 	],
 	"support": {
-		"issues":   "https://github.com/siloor/kohana-logreader/issues",
-		"source":   "https://github.com/siloor/kohana-logreader"
+		"issues": "https://github.com/siloor/kohana-logreader/issues",
+		"source": "https://github.com/siloor/kohana-logreader"
 	},
 	"require": {
 		"composer/installers": "~1.0",
 		"kohana/core":         ">=3.3",
 		"php":                 ">=5.3.3"
 	},
-    "require-dev": {
-        "kohana/core":         "3.3.*@dev",
-        "kohana/unittest":     "3.3.*@dev",
-        "kohana/koharness":    "*@dev"
-    }
+	"require-dev": {
+		"kohana/core":      "3.3.*@dev",
+		"kohana/unittest":  "3.3.*@dev",
+		"kohana/koharness": "*@dev"
+	}
 }
