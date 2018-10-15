@@ -16,7 +16,7 @@
 					<div class="panel panel-default">
 						<div class="panel-heading">Milan Magyar</div>
 						<div class="panel-body">
-							<img src="http://siloor.com/timg/logreader/milan.magyar.jpg" style="width: 70px; height: 70px; float: left; margin: 0 10px 0 0;" />
+							<img src="<?php print LogReader_URL::static_base(); ?>img/milan.magyar.jpg" style="width: 70px; height: 70px; float: left; margin: 0 10px 0 0;" />
 							<p><a href="https://github.com/siloor" target="_blank" title="GitHub">https://github.com/siloor</a></p>
 							<p><a href="http://hu.linkedin.com/in/milanmagyar" target="_blank" title="LinkedIn">http://hu.linkedin.com/in/milanmagyar</a></p>
 							<p><a href="http://siloor.com" target="_blank" title="siloor">http://siloor.com</a></p>
